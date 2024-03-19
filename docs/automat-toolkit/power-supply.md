@@ -9,14 +9,14 @@ nav_order: 3
 {: .no_toc }
 
 What kind of Power Supply can i use with the Automat Board / Controller
-You you need a center positive DC Power Supply.
+You you need a center positive DC Power Supply. \
+\
 Check if you find an Image like this on the Power Supply:
-[IMPORTANT: The + has to be in the Center!]
 
+![Center positive polarity image](images/center-positive-polarity-DC.jpg)
 
+{: .important }
+> The + has to be in the Center!
 
-The Plug Dimension is 2.5 x 5.5 mm.
+The Plug Dimension is 2.5 x 5.5 mm.\
 The Operating Voltage Range is 9-24V DC.
-
-If you want to order a Power Supply we will offer the custom high quality Mean Well coming with all Automat Toolkits in our Webshop shortly.
-In the meantime you can find matching Power Supplies in many other stores.

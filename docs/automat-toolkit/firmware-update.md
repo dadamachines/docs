@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Firmware Update
-nav_order: 4
+nav_order: 5
 parent: automat controller
 grand_parent: automat toolkit
 permalink: /docs/automat-toolkit/automat-controller/firmware-update/

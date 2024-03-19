@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Supported Apps
-nav_order: 2
+nav_order: 4
 parent: automat controller
 grand_parent: automat toolkit
 permalink: /docs/automat-toolkit/automat-controller/supported-apps/
