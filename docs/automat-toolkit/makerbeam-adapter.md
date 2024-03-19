@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Makerbeam Adapter
-parent: Assemble elements
+parent: Adapters
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/assemble-elements/makerbeam-adapter/
+permalink: /docs/automat-toolkit/adapters/makerbeam-adapter/
 ---
 
 # Makerbeam Adapter

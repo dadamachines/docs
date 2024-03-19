@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Round Object Mount
-parent: Assemble elements
+parent: Elements
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/assemble-elements/round-object-mount/
+permalink: /docs/automat-toolkit/elements/round-object-mount/
 ---
 
 # Round Object Mount

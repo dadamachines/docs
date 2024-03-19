@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Microphonestand Adapter
-parent: Assemble elements
+parent: Adapters
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/assemble-elements/microphonestand-adapter/
+permalink: /docs/automat-toolkit/adapters/microphonestand-adapter/
 ---
 
 # Microphone Stand Adapter

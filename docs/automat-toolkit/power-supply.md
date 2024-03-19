@@ -2,7 +2,7 @@
 layout: default
 title: power supply
 parent: automat toolkit
-nav_order: 2
+nav_order: 3
 ---
 
 # power supply

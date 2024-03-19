@@ -1,14 +1,13 @@
 ---
 layout: default
-title: automat specification
+title: automat controller
 parent: automat toolkit
+has_children: true
 nav_order: 2
 ---
 
-# automat specification
-{: .no_toc }
-
 ![automat controller floating](images/dada_automat-top_float.jpg)
+
 ## Input
 - **DC Powered** – Power Supply 9V-24V – DC Barrel Plug 2.5 x 5.5mm Center Positive – 8A max current (protected by 5x20mm Cartridge Fuse (Feinsicherung)).
 - The Power Supply coming with the automat toolkit has 24V – 160W – 6.6A (first batch of toolkits) or 24V – 120W – 5.0A (current batches of toolkits).

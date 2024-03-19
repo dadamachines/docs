@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Materialdrum
-parent: Assemble elements
+parent: Elements
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/assemble-elements/materialdrum/
+permalink: /docs/automat-toolkit/elements/materialdrum/
 ---
 
 # Materialdrum

@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Firmware Update
-parent: automat toolkit
-nav_order: 5
+nav_order: 4
+parent: automat controller
+grand_parent: automat toolkit
+permalink: /docs/automat-toolkit/automat-controller/firmware-update/
 ---
 
 # Firmware Update

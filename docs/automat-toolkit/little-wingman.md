@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Little Wingman
-parent: Assemble elements
+parent: Elements
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/assemble-elements/little-wingman/
+permalink: /docs/automat-toolkit/elements/little-wingman/
 ---
 
 # Little Wingman
