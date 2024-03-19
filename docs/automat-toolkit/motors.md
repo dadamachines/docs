@@ -6,4 +6,5 @@ nav_order: 4
 ---
 
 # Motors
-{: .no_toc }
+
+![automat toolkit solenoid motor](images/dada_solenoid.gif)

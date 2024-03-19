@@ -6,4 +6,4 @@ grand_parent: automat toolkit
 permalink: /docs/automat-toolkit/elements/materialdrum/
 ---
 
-# Materialdrum
+![automat toolkit materialdrum](../../images/dada_materialdrum.gif)

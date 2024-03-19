@@ -6,4 +6,4 @@ grand_parent: automat toolkit
 permalink: /docs/automat-toolkit/elements/little-wingman/
 ---
 
-# Little Wingman
+![automat toolkit little wingman](../../images/dada_littlewingman.gif)

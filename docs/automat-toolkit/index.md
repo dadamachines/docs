@@ -7,17 +7,14 @@ has_children: true
 
 ![alt text](images/dadamachines-video-poster.jpg)
 
-Hey,
-it looks like you just got your dadamachines – automat board / controller / toolkit!
+Hey,\
+it looks like you just got your dadamachines – automat board / controller / toolkit!\
+\
+Here I will explain how to get started with your hardware.
 
-## Here I will explain how to get started with your hardware.
-- After opening your package. The first thing you can do is to configure the MIDI connection of the automat either via DIN MIDI or USB.
-- [Please connect the Power Supply first, If you did not get one you can only continue via USB but not drive any motors with the outputs]
+{: .highlight }
+After opening your package. The first thing you can do is to [configure](/docs/automat-toolkit/automat-controller/configuration/) the MIDI connection of the automat either via **DIN MIDI** or **USB**.
 
-## How to configure the DC Outputs of the automat?
-Follow the QuickStart Guide which should be coming with your unit, or continue reading here.
+{: .important }
+> Please connect the [Power Supply](/docs/automat-toolkit/power-supply) first. If you did not get one you can only continue via USB but not drive any motors with the outputs.
 
-1. Connect the automat.
-2. Press the LEARN Button [IMPORTANT: The most right one on the backside of the automat] once.
-3. Send a MIDI note from your Keyboard, Sequencer, Computer.
->> The first output should now always be triggered by the MIDI note you send.

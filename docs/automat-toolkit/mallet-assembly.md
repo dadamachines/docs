@@ -6,4 +6,5 @@ grand_parent: automat toolkit
 permalink: /docs/automat-toolkit/elements/mallet-assembly/
 ---
 
-# Mallet assembly
+
+![automat toolkit mallet](../../images/dada_mallet.gif)
