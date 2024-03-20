@@ -5,12 +5,9 @@ parent: automat toolkit
 nav_order: 3
 ---
 
-# power supply
-{: .no_toc }
+![Power Supply](images/power-supply.png)
 
-What kind of Power Supply can i use with the Automat Board / Controller
-You you need a center positive DC Power Supply. \
-\
+For the Automat Board / Controller you need a center positive DC Power Supply. \
 Check if you find an Image like this on the Power Supply:
 
 ![Center positive polarity image](images/center-positive-polarity-DC.jpg)
