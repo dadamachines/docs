@@ -12,7 +12,7 @@ permalink: /automat-toolkit/automat-controller/advanced-configuration/
 You change the behavior of your automat using the **automat configurator app**. \
 This will allow you to use **velocity** on each of the 12 individual outputs.
 
-[Open the automat configurator](https://support.dadamachines.com/automat-configurator/){:target="_blank" .btn .btn-purple }
+[Open the automat configurator](https://docs.dadamachines.com/automat-configurator/){:target="_blank" .btn .btn-purple }
 
 {: .important }
 > Please use **Google Chrome** on a Desktop device. **Firefox**, **Safari** or **Google Chrome on iOS**(iPhone/iPad) do not support [Web MIDI](https://www.w3.org/TR/webmidi/){:target="_blank"}. 
