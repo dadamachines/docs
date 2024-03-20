@@ -4,7 +4,7 @@ title: Advanced LEARN
 nav_order: 2
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/advanced-learn/
+permalink: /automat-toolkit/automat-controller/advanced-learn/
 ---
 
 ![automat controller learn button](../../images/automat-learn-button.jpg)

@@ -4,7 +4,7 @@ title: Supported Apps
 nav_order: 4
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/supported-apps/
+permalink: /automat-toolkit/automat-controller/supported-apps/
 ---
 
 ![dadachron](../../images/dadamachines-dadachron.jpeg)

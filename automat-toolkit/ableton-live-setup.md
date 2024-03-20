@@ -4,7 +4,7 @@ title: Ableton LIVE setup
 nav_order: 4
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/ableton-live-setup/
+permalink: /automat-toolkit/automat-controller/ableton-live-setup/
 ---
 
 # Ableton LIVE Setup

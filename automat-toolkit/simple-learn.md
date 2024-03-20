@@ -4,7 +4,7 @@ title: Simple LEARN
 nav_order: 1
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/simple-configuration/
+permalink: /automat-toolkit/automat-controller/simple-configuration/
 ---
 
 ![automat controller learn button](../../images/automat-learn-button.jpg)

@@ -4,7 +4,7 @@ title: Firmware Update
 nav_order: 5
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/firmware-update/
+permalink: /automat-toolkit/automat-controller/firmware-update/
 ---
 
 # Firmware Update

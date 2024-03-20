@@ -4,7 +4,7 @@ title: Advanced configuration
 nav_order: 3
 parent: automat controller
 grand_parent: automat toolkit
-permalink: /docs/automat-toolkit/automat-controller/advanced-configuration/
+permalink: /automat-toolkit/automat-controller/advanced-configuration/
 ---
 
 ![automat configurator screenshot](../../images/automat-configurator.jpeg)
