@@ -1,5 +1,5 @@
 # dadamachines docs
-https://docs.dadamachines.com
+https://support.dadamachines.com/docs
 
 contributions welcome.
 
