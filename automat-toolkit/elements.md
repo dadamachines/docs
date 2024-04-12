@@ -6,9 +6,10 @@ has_children: true
 nav_order: 6
 ---
 
-{: .no_toc }
+![automat toolkit little wingman](https://docs.dadamachines.com/images/dada_littlewingman.gif)
 
-Hallo hier steht ein text
+![automat toolkit mallet](https://docs.dadamachines.com/images/dada_mallet.gif)
 
-{: .no_toc }
+![automat toolkit materialdrum](https://docs.dadamachines.com/images/dada_materialdrum.gif)
 
+![automat toolkit round object mount](https://docs.dadamachines.com/images/dada_roundobjectmount.gif)
