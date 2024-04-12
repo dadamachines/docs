@@ -8,8 +8,6 @@ permalink: /automat-toolkit/elements/materialdrum/
 
 # Materialdrum assembly
 
-![automat toolkit materialdrum](../../images/dada_materialdrum.gif)
-
 ![automat toolkit mallet](https://docs.dadamachines.com/images/dada_materialdrum-e1516798171636.jpg)
 
 ### Wooden parts needed:

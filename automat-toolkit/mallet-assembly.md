@@ -10,8 +10,6 @@ permalink: /automat-toolkit/elements/mallet-assembly/
 
 If the plastic part does not fit in the slot on the solenoid. Please use some sandpaper or a tiny file to remove the burr from the metal milling process.
 
-![automat toolkit mallet](../../images/dada_mallet.gif)
-
 ![automat toolkit mallet](https://docs.dadamachines.com/images/dada_mallet-e1516797848693.jpg)
 
 
