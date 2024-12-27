@@ -2,7 +2,7 @@
 layout: default
 title: midi
 parent: tbd
-has_children: true
+has_children: false
 ---
 # Midi
 
@@ -42,7 +42,3 @@ The following voice-modes are available:
 * Duophonic-AB: Channel 14
 * Duophonic-CD: Channel 15
 * Polyphonic (4-voice) Channel 16
-
-For more details please refer to the “Table of features per channel” below!
-Individual voices on Channels 2-5 (plus 6-9 and 10-13) optionally to be used via MPE
-For a good overview on MPE please refer to: https://studiocode.dev/resources/mpe
