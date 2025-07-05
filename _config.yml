@@ -12,6 +12,11 @@ aux_links:
 # Makes Aux links open in a new tab. Default is false
 aux_links_new_tab: true
 
+# Back to top button
+back_to_top: true
+back_to_top_text: "Back to top"
+
+
 # Callouts
 callouts_level: quiet # or loud
 callouts:
