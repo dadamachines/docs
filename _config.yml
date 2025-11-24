@@ -1,11 +1,8 @@
 title: dadamachines/docs
 description: Here you find the documentation for dadamachines products.
-remote_theme: just-the-docs/just-the-docs@v0.10.1
+theme: just-the-docs
 
 url: https://docs.dadamachines.com/
-
-plugins:
-  - jekyll-remote-theme
 
 # Aux links for the upper right navigation
 aux_links:
