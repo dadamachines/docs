@@ -44,7 +44,7 @@ layout: table_wrappers
     {% include components/mermaid.html %}
   {% endif %}
 <script>
-  BOT9_DATA = {
+  window.BOT9_DATA = {
     bot9Id: "1e026351-762c-43d9-b3c7-429f1268fae1",
     // user: {
     //   userId: '<unique_user_id>',
@@ -57,7 +57,12 @@ layout: table_wrappers
     //   }
     // }
   };
-  document.head.appendChild(document.createElement('script')).src = 'https://sdk.chatwidget.in/bot.js';
+  (function() {
+    var script = document.createElement('script');
+    script.src = 'https://sdk.chatwidget.in/bot.js';
+    script.async = true;
+    document.body.appendChild(script);
+  })();
 </script>
 </body>
 </html>
