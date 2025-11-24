@@ -43,26 +43,13 @@ layout: table_wrappers
   {% if site.mermaid %}
     {% include components/mermaid.html %}
   {% endif %}
-<script>
-  window.BOT9_DATA = {
-    bot9Id: "1e026351-762c-43d9-b3c7-429f1268fae1",
-    // user: {
-    //   userId: '<unique_user_id>',
-    //   emailId: '<user_email>',
-    //   name: '<user_name>',
-    //   customAttributes: {
-    //     Field1: '',
-    //     Field2: '',
-    //     Field3: '',
-    //   }
-    // }
-  };
-  (function() {
-    var script = document.createElement('script');
-    script.src = 'https://sdk.chatwidget.in/bot.js';
-    script.async = true;
-    document.body.appendChild(script);
-  })();
-</script>
+
+  <!-- Bot9 Chat Widget -->
+  <script>
+    window.BOT9_DATA = {
+      bot9Id: "1e026351-762c-43d9-b3c7-429f1268fae1"
+    };
+  </script>
+  <script src="https://sdk.chatwidget.in/bot.js" async></script>
 </body>
 </html>
