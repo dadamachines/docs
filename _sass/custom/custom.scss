@@ -1,0 +1,315 @@
+// TBD-16 manual - OLED screenshot styling
+.screenshot {
+  background-color: #000;
+  padding: 8px;
+  border-radius: 4px;
+  display: inline-block;
+
+  img {
+    image-rendering: pixelated;
+    display: block;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Custom table classes — opt-in via `{: .dada-toc-table }` or
+// `{: .dada-minimal-table }` placed on the line directly after a table
+// in the markdown. Both override the default just-the-docs boxed look.
+// ---------------------------------------------------------------------------
+
+// Shared base: strip wrapper shadow/background and cell backgrounds/borders
+%dada-table-base-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+}
+
+%dada-table-base-table {
+  border-collapse: collapse !important;
+  background: transparent !important;
+  font-size: 0.95em;
+  min-width: 0 !important;
+  width: 100%;
+}
+
+%dada-table-base-cell {
+  background: transparent !important;
+  border: 0 !important;
+  min-width: 0 !important;
+  vertical-align: top;
+}
+
+// ---- .dada-toc-table : fully flat, no dividers (for section TOC tables) ----
+.main-content .table-wrapper:has(> .dada-toc-table),
+.dada-toc-table-wrapper {
+  @extend %dada-table-base-wrapper;
+}
+
+.main-content .dada-toc-table {
+  @extend %dada-table-base-table;
+
+  th,
+  td {
+    @extend %dada-table-base-cell;
+    padding: 0.3rem 1.25rem 0.3rem 0 !important;
+  }
+
+  th {
+    font-weight: 600;
+    color: #555;
+    padding-bottom: 0.5rem !important;
+  }
+}
+
+// ---- .dada-minimal-table : flat, with thin horizontal row dividers --------
+.main-content .table-wrapper:has(> .dada-minimal-table),
+.dada-minimal-table-wrapper {
+  @extend %dada-table-base-wrapper;
+}
+
+.main-content .dada-minimal-table {
+  @extend %dada-table-base-table;
+
+  th,
+  td {
+    @extend %dada-table-base-cell;
+    padding: 0.6rem 1.25rem 0.6rem 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  }
+
+  th {
+    font-weight: 600;
+    color: #444;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.35) !important;
+  }
+
+  tr:last-child td {
+    border-bottom: 0 !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Origin & credits card — dark-themed attribution block used at the end of
+// each Machine profile page. Wrap the section in:
+//
+// <div class="origin-card" markdown="1">
+// ## Origin & credits
+// ...
+// </div>
+// ---------------------------------------------------------------------------
+
+.origin-card {
+  background: #1c1f26;
+  color: #c8ccd4;
+  border-radius: 10px;
+  padding: 1.5rem 1.75rem;
+  margin: 2.5rem 0 4rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-size: 0.92em;
+  line-height: 1.6;
+
+  h1, h2, h3, h4 {
+    color: #ffffff;
+    margin-top: 0;
+    border-bottom: 0;
+  }
+
+  a {
+    color: #8ab4ff;
+    text-decoration: underline;
+    text-decoration-color: rgba(138, 180, 255, 0.35);
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: #b7ceff;
+      text-decoration-color: currentColor;
+    }
+  }
+
+  p {
+    margin: 0.6rem 0;
+  }
+
+  ul {
+    margin: 0.6rem 0;
+    padding-left: 1.2rem;
+  }
+
+  li {
+    margin: 0.2rem 0;
+  }
+
+  code {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e6e8ed;
+    border: 0;
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  strong, b {
+    color: #ffffff;
+  }
+}
+
+// Pull the horizontal rule that usually precedes the card out of the way —
+// the card provides its own visual separation.
+hr + .origin-card,
+.origin-card + hr {
+  display: none;
+}
+
+// ---------------------------------------------------------------------------
+// Machine × Track availability matrix
+// Compact grid with machines in rows and track numbers as column headers.
+// ---------------------------------------------------------------------------
+
+.machine-matrix {
+  margin: 1rem 0 1.5rem;
+
+  // Kramdown wraps tables in .table-wrapper which provides the boxed shadow.
+  .table-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    overflow-x: auto;
+  }
+}
+
+.dada-matrix-table {
+  @extend %dada-table-base-table;
+  border-collapse: collapse !important;
+  box-shadow: none !important;
+
+  th, td {
+    @extend %dada-table-base-cell;
+    padding: 0.35rem 0.5rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  th:last-child,
+  td:last-child {
+    border-right: 0 !important;
+  }
+
+  thead th {
+    font-weight: 600;
+    font-size: 0.85em;
+    color: #555;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.18) !important;
+  }
+
+  // First column = machine name, left-aligned, stronger divider
+  th:first-child,
+  td:first-child {
+    text-align: left;
+    white-space: nowrap;
+    padding-right: 1rem;
+    border-right: 1px solid rgba(0, 0, 0, 0.18) !important;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  // The availability dot cells
+  tbody td:not(:first-child) {
+    color: #4a7ab8;
+    font-size: 1.1em;
+    line-height: 1;
+  }
+
+  // Subtle hover for row scanning
+  tbody tr:hover {
+    background: rgba(74, 122, 184, 0.06);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// tbd 16 preview indicator
+// A small "Preview" pill appended to the "tbd 16 groovebox" sidebar nav
+// item, and a compact info banner for use at the top of the tbd 16
+// landing page (firmware / manual version).
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Product status pills in the sidebar nav.
+// A small coloured pill appended to top-level product sidebar entries to
+// signal release status (Preview, Updated, Coming soon).
+// ---------------------------------------------------------------------------
+
+@mixin sidebar-status-pill($label, $fg, $bg) {
+  content: $label;
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.05em 0.45em;
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $fg;
+  background: $bg;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.nav-list .nav-list-item > .nav-list-link[href$="/tbd-16/"]::after {
+  @include sidebar-status-pill("Preview", #7a4b00, #ffd67a);
+}
+
+.nav-list .nav-list-item > .nav-list-link[href$="/automat-toolkit/"]::after {
+  @include sidebar-status-pill("Updated", #0b4d2b, #b7e8c8);
+}
+
+.nav-list .nav-list-item > .nav-list-link[href$="/tbd-platform/"]::after {
+  @include sidebar-status-pill("Preview", #7a4b00, #ffd67a);
+}
+
+.tbd16-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: #fff5d6;
+  border: 1px solid #f0d68a;
+  border-radius: 6px;
+  color: #5a4208;
+
+  .tbd16-info-status {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.7rem;
+    padding: 0.1em 0.55em;
+    border-radius: 999px;
+    background: #ffd67a;
+    color: #7a4b00;
+  }
+
+  .tbd16-info-meta {
+    color: #6a5420;
+  }
+
+  code {
+    background: rgba(0, 0, 0, 0.06);
+    border: 0;
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+    color: #5a4208;
+  }
+}

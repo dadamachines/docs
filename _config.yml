@@ -26,6 +26,15 @@ callouts:
   note:
     title: Note
     color: purple
+  tip:
+    title: Tip
+    color: green
   warning:
     title: Warning
     color: red
+# tbd 16 preview / firmware metadata (rendered in the sidebar)
+tbd16:
+  status: preview            # one of: preview, beta, stable
+  status_label: "Preview"    # text shown in the sidebar badge
+  firmware_version: "0.9.0-dev"
+  manual_updated: "2026-04-21"

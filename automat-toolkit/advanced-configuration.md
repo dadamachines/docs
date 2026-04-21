@@ -7,7 +7,7 @@ grand_parent: automat toolkit
 permalink: /automat-toolkit/automat-controller/advanced-configuration/
 ---
 
-![automat configurator screenshot](../../images/automat-configurator.jpeg)
+![automat configurator screenshot](../../../images/automat-toolkit/automat-configurator.jpeg)
 
 You change the behavior of your automat using the **automat configurator app**. \
 This will allow you to use **velocity** on each of the 12 individual outputs.

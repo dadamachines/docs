@@ -7,7 +7,7 @@ grand_parent: automat toolkit
 permalink: /automat-toolkit/automat-controller/supported-apps/
 ---
 
-![dadachron](../../images/dadamachines-dadachron.jpeg)
+![dadachron](../../../images/automat-toolkit/dadamachines-dadachron.jpeg)
 
 There is a huge list of software you can use with the automat. 
 Below you find some apps we have been using in the past.

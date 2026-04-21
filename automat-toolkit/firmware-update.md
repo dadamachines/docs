@@ -35,17 +35,17 @@ For the old firmware Version 1.0 download the following file: [https://docs.dada
 cd
 ```
 
-![automat firmware update process step 1]({{ '../images/automat-update-process-step_001.png' | relative_url }})
+![automat firmware update process step 1](../../../images/automat-toolkit/automat-update-process-step_001.png)
 
 5. Drag the Folder named “dadaupdatefiles” on the Terminal Window. What you see now should look similar to my the screenshot below.
 
 **NOW hit Enter**
 
-![automat firmware update process step 1]({{ '../images/automat-update-process-step_002.png' | relative_url }})
+![automat firmware update process step 1](../../../images/automat-toolkit/automat-update-process-step_002.png)
 
 6. Now you should be inside of the Folder on the Commandline / Terminal
 
-![automat firmware update process step 1]({{ '../images/automat-update-process-step_003.png' | relative_url }})
+![automat firmware update process step 1](../../../images/automat-toolkit/automat-update-process-step_003.png)
 
 7. Now you can copy the following Command to the Terminal Window
 ```
@@ -53,11 +53,11 @@ dd if=automat_update_180219.bin of=/Volumes/AUTOMAT/automat_update_180219.bin co
 ```
 **NOW hit Enter**
 
-![automat firmware update process step 1]({{ '../images/automat-update-process-step_004.png' | relative_url }})
+![automat firmware update process step 1](../../../images/automat-toolkit/automat-update-process-step_004.png)
 
 8. You will see something like this:
 
-![automat firmware update process step 1]({{ '../images/automat-update-process-step_005.png' | relative_url }})
+![automat firmware update process step 1](../../../images/automat-toolkit/automat-update-process-step_005.png)
 
 9. Now please and this is IMPORTANT use the Arrow Up Key on your Keyboard inside the Terminal Window to go back to the last Command and hit Enter again. (do this like 5 times)
 

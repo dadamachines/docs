@@ -7,7 +7,7 @@ grand_parent: automat toolkit
 permalink: /automat-toolkit/automat-controller/simple-learn/
 ---
 
-![automat controller learn button](../../images/automat-learn-button.jpg)
+![automat controller learn button](../../../images/automat-toolkit/automat-learn-button.jpg)
 
 1. Press the LEARN Button **once**.
 2. Send a MIDI note from your Keyboard, Sequencer, Computer. The simple LEARN mode will receive the lowest Note for the 1st Output and assign the 11 following notes to the other Outputs (chromatic).
