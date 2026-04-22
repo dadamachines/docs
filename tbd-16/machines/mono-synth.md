@@ -64,7 +64,17 @@ The 47 shapes aren't a random list — they cluster into audible families. Use t
 
 ## Parameters
 
-The default Mono Synth performance macro is organised as **four semantic pages**: Osc (sound source), Mod (envelope routing), Env (envelope shape), Crush (lo-fi effects).
+The default Mono Synth performance macro is organised as **four semantic pages**:
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Osc** | Shape | Timbre | Color | Warp |
+| **Mod** | Tim EG | Col EG | FM EG | Scale |
+| **Env** | Attack | Decay | EG Loop | *(empty)* |
+| **Crush** | **SR Red** | **Bit Red** | — | — |
+{: .dada-minimal-table }
+
+The Env page's 4th column is intentionally blank (a hidden placeholder) so SR Red and Bit Red can group together on the Crush page — the two lo-fi effects belong on one page semantically.
 
 ### Osc
 
@@ -94,7 +104,7 @@ An AD envelope shapes each triggered note. The envelope runs from `noteOn` for `
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Attack** | Attack time, 0–5 s, exponential curve. Most musically useful range sits in the lower ~quarter of the knob (plucks, leads, soft swells); beyond that you're in pad/drone territory. |
+| **Attack** | Attack time, 0–5 s, exponential. Hi-res encoder — 14-bit NRPN internally, so the low-end (plucks, clicks at 1–10 ms) feels responsive. Most musically useful range sits in the lower ~quarter of the knob; beyond that you're in pad/drone territory. |
 | **Decay** | Decay time, 0–5 s, exponential. Truncated at `noteOff`, so increase step gate length (or play long held notes) to actually hear long decays. |
 | **EG Loop** | `OFF` / `ON` — loop the envelope for tremolo / LFO-style modulation via Tim EG / Col EG / FM EG. Only audible on **held / long-gate notes** (short sequencer gates end before one loop cycle completes). |
 {: .dada-minimal-table }
@@ -109,8 +119,8 @@ Lo-fi sample-rate and bit-depth reduction at the tail of the signal path.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **SR Red** | Sample-rate reduction (0–30) — aliasing / grit |
-| **Bit Red** | Bit-depth reduction (0–5) — lo-fi crush *(audibility under investigation in current firmware; SR Red works as expected)* |
+| **SR Red** | Sample-rate reduction, **0–30**. Each click = one DSP decimation step. Audible progression from clean → grainy aliasing → heavy 8-bit-style digital distortion at max. |
+| **Bit Red** | Bit-depth reduction, **0–5**. Values reach the DSP correctly, but the intended audible crush does not manifest in the current firmware — **known issue, under investigation** by the DSP maintainers. Leave at 0 for now; SR Red provides audible lo-fi character. |
 {: .dada-minimal-table }
 
 ---
