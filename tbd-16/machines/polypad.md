@@ -8,7 +8,7 @@ nav_order: 13
 
 # PolyPad
 
-A 24-voice polyphonic chord-pad synth. Hold one note and PolyPad voices a full chord with inversions, detuned supersaw voices, two LFOs and a state-variable filter.
+A polyphonic chord-pad synth. Play a single root note and PolyPad voices a full chord of up to 8 stacked notes, with inversions, detuned supersaw layers, two LFOs and a state-variable filter.
 {: .fs-6 .fw-300 }
 
 **Available on:** Track 9  
@@ -18,9 +18,9 @@ A 24-voice polyphonic chord-pad synth. Hold one note and PolyPad voices a full c
 
 ## Character
 
-Pick a chord shape, pick an inversion, play a single root note — PolyPad voices a full chord with up to 8 stacked notes across 24 voices. Detuned supersaw layers produce a rich, classic-trance chord pad; turn detune down and the shape stays clean for film-score strings.
+Pick a chord shape, pick an inversion, play a single root note — PolyPad voices a full chord with up to 8 stacked notes per trigger. Detuned supersaw layers produce a rich, classic-trance chord pad; turn detune down and the shape stays clean for film-score strings.
 
-Two LFOs can modulate filter cutoff and pitch, the SVF gives you LP/BP/HP shaping, and a full ADSR makes PolyPad equally at home on slow pads, plucky stabs or rhythmic chord stabs.
+Two LFOs can modulate filter cutoff and pitch, the SVF gives you LP / BP / HP shaping, and a per-chord-trigger ADSR envelope makes PolyPad equally at home on slow pads, plucky stabs or rhythmic chord stabs.
 
 **Available chord shapes:** `OCT · 5 · sus4 · m · m6 · m7 · m9 · m11 · 69 · M9 · M7 · M6 · M · D7 · A7 · HDim7 · Dim7 · Dom7 sus`
 
@@ -28,14 +28,16 @@ Two LFOs can modulate filter cutoff and pitch, the SVF gives you LP/BP/HP shapin
 
 ## Parameters
 
+The default PolyPad performance macro is organised as **4 pages × 4 controls**.
+
 ### Chord
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **chord** | Chord type (18 shapes, see list above) |
-| **inversion** | Chord inversion |
-| **nnotes** | Number of stacked notes (1–8) |
-| **detune** | Supersaw detune amount |
+| **Chord** | Chord type (18 shapes, see list above) |
+| **Inv** | Chord inversion |
+| **Nnotes** | Number of stacked notes (1–8) |
+| **Detune** | Supersaw detune amount |
 {: .dada-minimal-table }
 
 
@@ -43,29 +45,36 @@ Two LFOs can modulate filter cutoff and pitch, the SVF gives you LP/BP/HP shapin
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **filter_type** | LP / BP / HP |
-| **cutoff** | Filter cutoff |
-| **resonance** | Filter resonance |
-| **q_scale** | Key-tracking scale |
-| **eg_filt_amt** | Envelope → cutoff amount |
+| **Cutoff** | Filter cutoff frequency |
+| **Reso** | Filter resonance |
+| **Type** | LP / BP / HP |
+| **EG Flt** | Envelope → cutoff amount |
 {: .dada-minimal-table }
 
 
-### Envelope (ADSR)
+### Env
+
+The ADSR envelope shapes each triggered chord. Re-triggered on every note, not held from a key gate.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **attack / decay / sustain / release** | Full ADSR envelope |
+| **Attack** | Time from trigger to envelope peak |
+| **Decay** | Time from peak down to sustain level |
+| **Sustain** | Level held while the chord sustains |
+| **Release** | Time from note-off back to zero |
 {: .dada-minimal-table }
 
 
-### LFO 1 + LFO 2
+### Motion
+
+Two LFOs for filter cutoff and pitch modulation.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **lfo1_freq / lfo1_amt** | LFO 1 speed + amount |
-| **lfo2_freq / lfo2_amt** | LFO 2 speed + amount |
-| **lfo2_rphase** | LFO 2 retrigger phase |
+| **L1 Spd** | LFO 1 speed (modulates pitch / vibrato) |
+| **L1 Amt** | LFO 1 depth |
+| **L2 Spd** | LFO 2 speed (modulates filter cutoff) |
+| **L2 Amt** | LFO 2 depth |
 {: .dada-minimal-table }
 
 
