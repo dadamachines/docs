@@ -24,18 +24,33 @@ A pure sine oscillator, driven through a pair of resonant state-variable filters
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Pitch of the sine body |
-| **base** | soft → hard | Pre-filter drive / tone character |
-| **decay** | short → long | Envelope decay |
-| **reso_hp** | open → resonant | Highpass resonance — more ring at higher values |
-| **noise_level** | 0 → high | Metallic noise layer amount |
-| **accent** | soft → hard | Velocity / emphasis |
+The `rs-allparams` macro exposes all five primary DSP controls across two pages:
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone** | Freq | Tone | Decay | Noise |
+| **Snap** | Accent | — | — | — |
+{: .dada-minimal-table }
+
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high   | Pitch of the sine body | `f0` |
+| **Tone**  | soft → hard  | Pre-filter drive / tone character | `base` |
+| **Decay** | short → long | Envelope decay | `decay` |
+| **Noise** | 0 → high     | Metallic noise layer amount | `noise_level` |
+{: .dada-minimal-table }
+
+### Snap
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
 {: .dada-minimal-table }
 
 {: .tip }
-> Low `f0` + low `noise_level` = woodblock; higher `f0` + medium `noise_level` + more `reso_hp` = classic 808 rimshot.
+> Low `Freq` + low `Noise` = woodblock; higher `Freq` + medium `Noise` + more resonant `Tone` = classic 808 rimshot.
 
 ---
 

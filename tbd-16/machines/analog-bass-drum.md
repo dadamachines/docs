@@ -24,19 +24,34 @@ Models a classic analog bass-drum voice — a damped resonant body with a fast p
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Base pitch of the bass-drum body |
-| **tone** | dark → bright | Transient / body brightness |
-| **decay** | short → long | Body decay length |
-| **attack_fm_amount** | 0 → high | Pitch-sweep intensity at the attack |
-| **self_fm_amount** | 0 → high | Internal feedback FM — adds punch and weight |
-| **accent** | soft → hard | Overall emphasis / velocity scaling |
+The `ab-allparams` macro exposes all six DSP parameters across two pages (OLED short label: **AnaKick**):
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone**   | Freq | Tone | Decay | A FM |
+| **FM Env** | S FM | Accent | — | — |
 {: .dada-minimal-table }
 
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high    | Base pitch of the bass-drum body | `f0` |
+| **Tone**  | dark → bright | Transient / body brightness | `tone` |
+| **Decay** | short → long  | Body decay length | `decay` |
+| **A FM**  | 0 → high      | Attack FM — pitch-sweep intensity at the attack | `attack_fm_amount` |
+{: .dada-minimal-table }
+
+### FM Env
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **S FM**   | 0 → high    | Self FM — internal feedback FM, adds punch and weight | `self_fm_amount` |
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
+{: .dada-minimal-table }
 
 {: .tip }
-> Longer `decay` with low `f0` gives the long-tail 808 sub kick; shorter `decay` with a slightly higher `f0` gives tighter 909-style kicks.
+> Longer `Decay` with low `Freq` gives the long-tail 808 sub kick; shorter `Decay` with a slightly higher `Freq` gives tighter 909-style kicks.
 
 ---
 

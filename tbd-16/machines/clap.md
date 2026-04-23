@@ -24,22 +24,33 @@ Two filtered noise layers running through a pair of state-variable filters and A
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **pitch1** | low → high | Centre frequency of burst layer 1 |
-| **pitch2** | low → high | Centre frequency of burst layer 2 |
-| **reso1** | soft → sharp | Resonance of layer 1 filter |
-| **reso2** | soft → sharp | Resonance of layer 2 filter |
-| **decay1** | short → long | Tail decay of layer 1 |
-| **decay2** | short → long | Tail decay of layer 2 (the long "room" tail) |
-| **attack** | fast → soft | Transient softness |
-| **scale** | tight → spread | Spacing of the burst sequence |
-| **transient** | 0 → 15 | Transient preset (burst pattern / timing) |
+The `cl-allparams` macro surfaces the five most playable controls across two pages — the underlying DSP has more layers internally (two filtered burst layers, per-layer resonance and decay, timer patterns) that the macro collapses into higher-level shaping knobs:
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone**  | Freq | Tone | Decay | Scale |
+| **Shape** | Trans | — | — | — |
 {: .dada-minimal-table }
 
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high     | Centre pitch of the burst layers | `pitch1` / `pitch2` |
+| **Tone**  | soft → sharp   | Filter resonance shaping | `reso1` / `reso2` |
+| **Decay** | short → long   | Overall tail length of both layers | `decay1` / `decay2` |
+| **Scale** | tight → spread | Spacing of the burst sequence | `scale` |
+{: .dada-minimal-table }
+
+### Shape
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Trans** | 0 → 15 | Transient pattern preset (burst timing / attack softness) | `transient` |
+{: .dada-minimal-table }
 
 {: .tip }
-> Lock `scale` or `transient` per step to turn a single clap track into handclap, rimshot-burst and tambourine-like textures.
+> Lock `Scale` or `Trans` per step to turn a single clap track into handclap, rimshot-burst and tambourine-like textures.
 
 ---
 

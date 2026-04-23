@@ -24,18 +24,33 @@ A tuned oscillator pair plus a noise layer, shaped by a fast envelope. Pitched c
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Pitch of the tonal body |
-| **fm_amount** | 0 → high | Envelope FM into the oscillator — adds bite |
-| **decay** | short → long | Body + noise decay length |
-| **snappy** | body → snap | Balance between tonal body and snare noise layer |
-| **accent** | soft → hard | Velocity / emphasis |
+The `ds-allparams` macro exposes all five DSP parameters across two pages:
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone** | Freq | Decay | FM | Snap |
+| **Snap** | Accent | — | — | — |
 {: .dada-minimal-table }
 
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high   | Pitch of the tonal body | `f0` |
+| **Decay** | short → long | Body + noise decay length | `decay` |
+| **FM**    | 0 → high     | Envelope FM into the oscillator — adds bite | `fm_amount` |
+| **Snap**  | body → snap  | Balance between tonal body and snare noise layer | `snappy` |
+{: .dada-minimal-table }
+
+### Snap
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
+{: .dada-minimal-table }
 
 {: .tip }
-> Lock `f0` per step to create snare melodies; very short `decay` values behave almost like rimshots.
+> Lock `Freq` per step to create snare melodies; very short `Decay` values behave almost like rimshots.
 
 ---
 

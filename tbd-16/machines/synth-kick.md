@@ -24,19 +24,35 @@ A model-based synth kick rather than an analog emulation. The tone control pushe
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Base pitch of the kick body |
-| **tone** | soft → clicky | Transient brightness |
-| **decay** | short → long | Body decay length |
-| **dirtiness** | clean → dirty | Adds grit / noise to the body (low-pitched kicks only) |
-| **fm_envelope_amount** | 0 → high | Strength of the pitch-sweep at the attack |
-| **fm_envelope_decay** | short → long | Speed of the pitch sweep |
-| **accent** | soft → hard | Overall emphasis / velocity scaling |
+The `db-allparams` macro surfaces all seven DSP parameters across two pages:
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone**   | Freq | Tone | Decay | Dirt |
+| **FM Env** | Fm Env | Fm Decay | Fm Accent | — |
+{: .dada-minimal-table }
+
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high    | Base pitch of the kick body | `f0` |
+| **Tone**  | soft → clicky | Transient brightness | `tone` |
+| **Decay** | short → long  | Body decay length | `decay` |
+| **Dirt**  | clean → dirty | Adds grit / noise to the body (low-pitched kicks only) | `dirtiness` |
+{: .dada-minimal-table }
+
+### FM Env
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Fm Env**    | 0 → high     | Strength of the pitch-sweep at the attack | `fm_envelope_amount` |
+| **Fm Decay**  | short → long | Speed of the pitch sweep | `fm_envelope_decay` |
+| **Fm Accent** | soft → hard  | Overall emphasis / velocity scaling | `accent` |
 {: .dada-minimal-table }
 
 {: .tip }
-> Set a short `decay` with a mid `tone` for fast techno kicks; long `decay` with higher `f0` for tom-like body hits.
+> Set a short `Decay` with a mid `Tone` for fast techno kicks; long `Decay` with higher `Freq` for tom-like body hits.
 
 ---
 

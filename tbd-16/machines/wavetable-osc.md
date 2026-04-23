@@ -108,9 +108,7 @@ LFO → destinations. All unipolar 0–100 %.
 
 | Preset | Character |
 |:-------|:----------|
-| `WaveTbl` | Neutral defaults across every knob. Starting point for sound design. |
-| `GlasEvo` | Glass-like evolving pad — mid morph, bright filter, subtle LFO texture. |
-| `Gritty` | Deeper bass morph with harsher wavetable position + filter drive. |
+| `Default` | Neutral starting point across every knob — tune by ear from here. |
 {: .dada-minimal-table }
 
 ---

@@ -24,18 +24,33 @@ Two detuned resonant modes shaped by a fast envelope, plus a filtered noise burs
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Base pitch of the tonal body |
-| **tone** | dark → bright | Brightness of the body modes |
-| **decay** | short → long | Snare tail length |
-| **snappy** | body → snap | Balance between body and noise layer |
-| **accent** | soft → hard | Velocity / emphasis |
+The `as-allparams` macro exposes all five DSP parameters across two pages (OLED short label: **AnaSnare**):
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Tone** | Freq | Tone | Decay | Snap |
+| **Snap** | Accent | — | — | — |
 {: .dada-minimal-table }
 
+### Tone
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high    | Base pitch of the tonal body | `f0` |
+| **Tone**  | dark → bright | Brightness of the body modes | `tone` |
+| **Decay** | short → long  | Snare tail length | `decay` |
+| **Snap**  | body → snap   | Balance between body and noise layer | `snappy` |
+{: .dada-minimal-table }
+
+### Snap
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
+{: .dada-minimal-table }
 
 {: .tip }
-> Higher `snappy` for noisy rimshot-style hits; lower `snappy` for pitched, tom-like snares.
+> Higher `Snap` for noisy rimshot-style hits; lower `Snap` for pitched, tom-like snares.
 
 ---
 

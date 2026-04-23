@@ -24,17 +24,33 @@ A six-partial metallic noise source shaped by a bandpass/highpass filter and a f
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Centre pitch of the hat partials |
-| **tone** | warm → bright | Bandpass / highpass colour |
-| **decay** | short → long | Decay time (short = closed, long = half-open) |
-| **noisiness** | metallic → noisy | Blend between tuned partials and white noise |
-| **accent** | soft → hard | Velocity / emphasis |
+The `hh1-allparams` macro exposes all five DSP parameters across two pages (OLED short label: **Hat 1**):
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Voice** | Freq | Tone | Decay | Noise |
+| **Snap**  | Accent | — | — | — |
+{: .dada-minimal-table }
+
+### Voice
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high       | Centre pitch of the hat partials | `f0` |
+| **Tone**  | warm → bright    | Bandpass / highpass colour | `tone` |
+| **Decay** | short → long     | Decay time (short = closed, long = half-open) | `decay` |
+| **Noise** | metallic → noisy | Blend between tuned partials and white noise | `noisiness` |
+{: .dada-minimal-table }
+
+### Snap
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
 {: .dada-minimal-table }
 
 {: .tip }
-> Lock `decay` per step to mix closed and half-open hits on a single track, or run HH1 closed and HH2 open on adjacent tracks.
+> Lock `Decay` per step to mix closed and half-open hits on a single track, or run HH1 closed and HH2 open on adjacent tracks.
 
 ---
 

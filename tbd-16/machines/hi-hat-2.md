@@ -24,13 +24,29 @@ Same six-partial metallic noise voice as HH1, tuned here for longer, more sustai
 
 ## Parameters
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f0** | low → high | Centre pitch of the hat partials |
-| **tone** | warm → bright | Bandpass / highpass colour |
-| **decay** | short → long | Open-hat decay time |
-| **noisiness** | metallic → noisy | Blend between tuned partials and white noise |
-| **accent** | soft → hard | Velocity / emphasis |
+The `hh2-allparams` macro exposes all five DSP parameters across two pages (OLED short label: **Hat 2**):
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Voice** | Freq | Tone | Decay | Noise |
+| **Snap**  | Accent | — | — | — |
+{: .dada-minimal-table }
+
+### Voice
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Freq**  | low → high       | Centre pitch of the hat partials | `f0` |
+| **Tone**  | warm → bright    | Bandpass / highpass colour | `tone` |
+| **Decay** | short → long     | Open-hat decay time | `decay` |
+| **Noise** | metallic → noisy | Blend between tuned partials and white noise | `noisiness` |
+{: .dada-minimal-table }
+
+### Snap
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **Accent** | soft → hard | Velocity / emphasis | `accent` |
 {: .dada-minimal-table }
 
 {: .tip }
