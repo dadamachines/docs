@@ -30,33 +30,45 @@ The modulator can run either on a free Hz frequency or on a **ratio** to the car
 
 ## Parameters
 
-### Carrier
+The `fmb-allparams` macro exposes all ten FM-drum parameters across three pages:
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **f_b** | 20 – 100 Hz | Base carrier frequency (the pitch) |
-| **d_b** | 1 ms – 2 s | Carrier amplitude decay |
-| **A_f** | 0 – 1000 Hz | Pitch-sweep amount at the attack |
-| **d_f** | 1 ms – 2 s | Pitch-sweep decay time |
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Carrier**   | carFrq  | carDec  | atkPit | swpDec |
+| **Modulator** | modFrq  | modDec  | modFB  | index  |
+| **Mode**      | ratio   | envSync | —      | —      |
 {: .dada-minimal-table }
 
+### Carrier
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **carFrq**  | 20 – 100 Hz | Base carrier frequency — the fundamental pitch of the kick | `f_b` |
+| **carDec**  | 1 ms – 2 s  | Carrier amplitude decay — how long the body sustains | `d_b` |
+| **atkPit**  | 0 – 1000 Hz | Pitch-sweep amount at the attack — initial pitch deviation before settling | `A_f` |
+| **swpDec**  | 1 – 100 ms  | Pitch-sweep decay — how fast the attack pitch settles | `d_f` |
+{: .dada-minimal-table }
 
 ### Modulator
 
-| Parameter | Range | What it does |
-|:----------|:------|:-------------|
-| **use_ratio_mode** | off / on | Switch modulator frequency between Hz and ratio-to-carrier |
-| **f_m** | 40 – 2000 Hz | Modulator frequency (when ratio mode is off) |
-| **mod_ratio_index** | 0 – 63 | Modulator ratio preset (when ratio mode is on) |
-| **I** | 0 – 10 | Modulation index (modulator amplitude into carrier) |
-| **b_m** | 0 – 16 | Modulator self-feedback |
-| **d_m** | 1 ms – 2 s | Modulator amplitude decay |
-| **mod_env_sync** | off / on | Sync modulator frequency envelope to carrier |
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **modFrq**  | 40 – 2000 Hz | Modulator frequency (Hz mode) — tonal character of the FM | `f_m` |
+| **modDec**  | 1 – 500 ms   | Modulator amplitude decay — transient brightness length | `d_m` |
+| **modFB**   | 0 – 16       | Modulator self-feedback — distortion / resonance amount | `b_m` |
+| **index**   | 0 – 10       | FM modulation index — depth of the modulation (0 = no FM) | `I` |
 {: .dada-minimal-table }
 
+### Mode
+
+| Parameter | Range | What it does | DSP |
+|:----------|:------|:-------------|:----|
+| **ratio**   | off / on | When on, `modFrq` locks to a harmonic ratio of `carFrq` instead of running as free Hz — enables clean musical FM bass lines | `use_ratio_mode` |
+| **envSync** | off / on | Sync the modulator frequency envelope to the carrier — cleaner retrigger for sequenced bass | `mod_env_sync` |
+{: .dada-minimal-table }
 
 {: .tip }
-> For punchy techno kicks: low `f_b`, short `d_b`, short `d_m`, moderate `I`, short `A_f` pitch sweep. For FM bass lines: higher `f_b`, ratio mode on, longer `d_b`.
+> For punchy techno kicks: low `carFrq`, short `carDec`, short `modDec`, moderate `index`, short `atkPit` sweep. For FM bass lines: higher `carFrq`, `ratio` on, longer `carDec`.
 
 ---
 
