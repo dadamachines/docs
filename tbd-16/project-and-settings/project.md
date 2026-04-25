@@ -58,7 +58,7 @@ Opening the menu shows a two-page browser:
 
 | Template | What it does |
 |:---------|:-------------|
-| **default** | The standard **tbd 16** kit — synth kick, FM kick, snares, hats, claps, rimshot, acid bass, mono synth, wavetable, polypad, audio input, plus Rompler tracks for samples. |
+| **default** | The standard **tbd 16** kit — synth kick, FM kick, snares, hats, claps, rimshot, TBD03, mono synth, wavetable, polypad, audio input, plus Rompler tracks for samples. |
 | **sampler** | All Rompler — ideal for sample-based production. Most tracks load Rompler across multiple banks. |
 {: .dada-minimal-table }
 

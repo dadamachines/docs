@@ -50,7 +50,7 @@ Click a Machine for the full profile — origin, character, parameters, and tips
 
 | Machine | Character | Based on |
 |:--------|:----------|:---------|
-| [Acid Bass](acid-bass) | 303-style acid line | Braids oscillator + diode-ladder filter |
+| [TBD03](tbd03) | 303-style acid line | Braids oscillator + diode-ladder filter |
 | [Mono Synth](mono-synth) | Versatile mono voice | Mutable Instruments Braids macro oscillator |
 | [Wavetable Osc](wavetable-osc) | Wavetable lead / pad | Braids-based wavetable oscillator |
 | [PolyPad](polypad) | 24-voice chord pad | CTAG `ChordSynth` / PolyPad |
@@ -86,7 +86,7 @@ Which Machines each track can host. A dot (●) means the Machine is available o
 | [Hi-Hat 2](hi-hat-2)             |   |   |   | ● |   |   |   |   |   |    |    |    |    |    |    |    |
 | [Rimshot](rimshot)               |   |   |   |   | ● |   |   |   |   |    |    |    |    |    |    |    |
 | [Clap](clap)                     |   |   |   |   |   | ● |   |   |   |    |    |    |    |    |    |    |
-| [Acid Bass](acid-bass)           |   |   |   |   |   |   |   |   | ● | ●  |    |    |    |    |    |    |
+| [TBD03](tbd03)                   |   |   |   |   |   |   |   |   | ● | ●  |    |    |    |    |    |    |
 | [Mono Synth](mono-synth)         |   |   |   |   |   |   |   |   |   |    | ●  | ●  |    |    |    |    |
 | [Wavetable Osc](wavetable-osc)   |   |   |   |   |   |   |   |   |   |    |    | ●  |    |    |    |    |
 | [PolyPad](polypad)               |   |   |   |   |   |   |   |   |   |    |    |    |    |    | ●  |    |

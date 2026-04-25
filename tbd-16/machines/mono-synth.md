@@ -33,7 +33,7 @@ A chameleon synth voice. The **shape** control steps through the full Braids mod
 | Use this | If you want |
 |:---------|:------------|
 | **Mono Synth** | Maximum tonal variety in one voice — 47 shapes from analog to granular to speech |
-| [Acid Bass (TBD-03)](acid-bass) | Focused 303-style bass with dedicated filter envelope + accent |
+| [TBD03](tbd03) | Focused 303-style bass with dedicated filter envelope + accent |
 | [Wavetable Osc](wavetable-osc) | Smooth wavetable morphing without the extras |
 | [PolyPad](polypad) | Chords, pads, evolving textures — polyphonic, 24 voices |
 {: .dada-minimal-table }
@@ -224,7 +224,7 @@ For one-shot perc layers:
 
 ## See also
 
-- [Acid Bass (TBD-03)](acid-bass) — same oscillator in a 303-style chassis.
+- [TBD03](tbd03) — same oscillator in a 303-style chassis.
 - [Wavetable Osc](wavetable-osc) — dedicated wavetable voice.
 - [PolyPad](polypad) — 24-voice polyphonic companion.
 
