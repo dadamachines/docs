@@ -28,14 +28,24 @@ Braids provides the tonal source — saw, square, FM, and many other Braids synt
 
 ---
 
-## Parameters
+## Macros
 
-Two macros ship for this machine — pick the one that matches how you want to perform:
+Three macros ship for this machine — different layouts of the same DSP voice, pick the one that matches how you want to perform:
 
-- **`td3-allparams`** — full 15-knob access across four pages (below). Use for deep sound design. Preset picker shows these as `F Default` / `F Acid` (F = Full parameter set).
-- **`td3-acidbass`** — 4-knob performance macro: `Squelch` / `Grit` / `Envelope` / `Accent`. Each knob fans out to multiple underlying DSP ctrls so one twist changes a whole aspect of the sound at once. Use for live tweaking and P-lock automation. Preset picker shows these as `P Classic` / `P Dirty` (P = Performance).
+- **`td3-allparams`** — full 15-knob deep access across **4 pages** (Osc / Filter / Mod / Env). For sound design and per-parameter automation. Shipped preset: `F Default`.
+- **`td3-hybrid`** — semantic 3-page layout (Osc / Filter / Perf) that re-arranges the same parameters into more intuitive groupings, with a "performance" page collecting the live-tweak knobs. Shipped presets: `H Bass`, `H Squelch`.
+- **`td3-acidbass`** — 4-knob performance macro: `Squelch` / `Grit` / `Envelope` / `Accent`. Each knob fans out to multiple underlying DSP ctrls so one twist changes a whole aspect of the sound at once. Hi-res NRPN sources for smooth sweeps. No factory preset shipped today; create your own via the WebUI Preset Manager and assign this macro to a track.
 
-### `td3-allparams` page layout (4/4/4/3)
+The preset picker name prefix tells you which macro is behind a preset:
+- `F` — **Full** all-params macro (15 knobs across 4 pages).
+- `H` — **Hybrid** layout (3 pages with Perf grouping).
+- `P` — **Performance** macro (4 fan-out knobs).
+
+---
+
+## `td3-allparams` — page layout (4/4/4/3)
+
+The deep-access macro. Every shipped TBD03 sound exposing the full parameter surface uses this layout.
 
 | Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
 |:-----|:-------|:-------|:-------|:-------|
@@ -47,6 +57,8 @@ Two macros ship for this machine — pick the one that matches how you want to p
 
 ### Osc
 
+![td3-allparams — Osc page](../../../images/tbd-16/td3_all_osc.png){: .screenshot }
+
 | Parameter | What it does |
 |:----------|:-------------|
 | **Shape** | Braids synthesis model (47 shapes, same catalogue as Mono Synth). `SAW\|SQR` (shape 2) is the classic acid starting point. |
@@ -56,6 +68,8 @@ Two macros ship for this machine — pick the one that matches how you want to p
 {: .dada-minimal-table }
 
 ### Filter
+
+![td3-allparams — Filter page](../../../images/tbd-16/td3_all_filter.png){: .screenshot }
 
 | Parameter | What it does |
 |:----------|:-------------|
@@ -67,6 +81,8 @@ Two macros ship for this machine — pick the one that matches how you want to p
 
 ### Mod
 
+![td3-allparams — Mod page](../../../images/tbd-16/td3_all_mod.png){: .screenshot }
+
 | Parameter | What it does |
 |:----------|:-------------|
 | **Env Amt** | Filter-envelope amount — how much the VCF envelope opens the cutoff. Classic 303 squelch lives here. Hi-res. |
@@ -77,11 +93,64 @@ Two macros ship for this machine — pick the one that matches how you want to p
 
 ### Env
 
+![td3-allparams — Env page](../../../images/tbd-16/td3_all_env.png){: .screenshot }
+
 | Parameter | What it does |
 |:----------|:-------------|
 | **VCA Dec** | Amplitude envelope decay, 0–5 s exponential. Hi-res. |
 | **VCF Dec** | Filter envelope decay, 0–5 s exponential (Accent shortens this to 0.5 s for per-step sharpness). Hi-res. |
 | **Accent** | `OFF`/`ON` — per-track accent toggle. Shortens VCF Dec and boosts VCA gain + cutoff when ON. Lock per-step for 303-style accent patterns. |
+{: .dada-minimal-table }
+
+---
+
+## `td3-hybrid` — page layout (4/4/4)
+
+A semantic re-grouping of the same DSP into 3 pages. Same parameters, different organisation: **Osc** brings shape + the two timing knobs (Length / Sweep) into one page, **Filter** keeps Cutoff/Reso/Env/Type together, and **Perf** collects the four "live tweak" controls (Warp / Drive / Motion / Accent) on a single page for fast performance edits.
+
+| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
+|:-----|:-------|:-------|:-------|:-------|
+| **Osc** | Shape | Timbre | Length | Sweep |
+| **Filter** | Cutoff | Reso | Env | Type |
+| **Perf** | Warp | Drive | Motion | Accent |
+{: .dada-minimal-table }
+
+### Osc
+
+![td3-hybrid — Osc page](../../../images/tbd-16/td3_hybrid_osc.png){: .screenshot }
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Shape** | Braids synthesis model (same 47-shape catalogue). `SAW\|SUB` (shape 6) is the classic acid bass starting point on this macro. |
+| **Timbre** | Braids parameter 0 (model-specific). Hi-res 14-bit. |
+| **Length** | VCA decay alias — controls how long each note sustains. Hi-res, exponential. Same DSP target as `VCA Dec` on the all-params macro. |
+| **Sweep** | VCF decay alias — controls how long the filter envelope sweeps before settling. Hi-res, exponential. Same DSP target as `VCF Dec`. |
+{: .dada-minimal-table }
+
+### Filter
+
+![td3-hybrid — Filter page](../../../images/tbd-16/td3_hybrid_filter.png){: .screenshot }
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Cutoff** | Filter cutoff frequency, log-swept 14-bit. |
+| **Reso** | Filter resonance, 14-bit. |
+| **Env** | Filter envelope amount. Same DSP target as `Env Amt` on the all-params macro. |
+| **Type** | Filter topology select (0..3, same four modes as on the all-params macro). |
+{: .dada-minimal-table }
+
+### Perf
+
+![td3-hybrid — Perf page](../../../images/tbd-16/td3_hybrid_perf.png){: .screenshot }
+
+The performance / character page. Pick the four live-tweak knobs you'll P-lock per step or twist during a take.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Warp** | Oscillator waveshaper amount. Hi-res. |
+| **Drive** | Filter input drive / soft-clip gain. Hi-res. |
+| **Motion** | Combined Tim EG + Col EG modulator routing — one knob to add timbre/color movement under the filter envelope. Hi-res. Replaces the two separate Tim EG / Col EG knobs from the all-params macro. |
+| **Accent** | `OFF`/`ON` accent toggle. P-lock per step. |
 {: .dada-minimal-table }
 
 ---
@@ -118,33 +187,36 @@ Gated on `Accent`. When `Accent = OFF` (the factory default for `F Default`), `A
 
 ---
 
-## Performance macro (`td3-acidbass`) — four knobs, many CCs
+## `td3-acidbass` — performance macro (1 page)
 
-The performance macro collapses the 15-knob "all params" layout down to **four knobs** that each fan out to the underlying DSP ctrls. Good for quick tweaking and parameter-locked acid lines where one knob shifts multiple sonic attributes together.
+![td3-acidbass — Perform page](../../../images/tbd-16/td3_acid_perform.png){: .screenshot }
 
-All four source knobs are hi-res (14-bit NRPN) — each click is a distinct DSP step.
+Single-page 4-knob macro that collapses the 15-knob deep layout down to four "fan-out" controls. Each source knob is hi-res 14-bit NRPN and drives multiple underlying DSP ctrls in parallel — so one twist changes a whole sonic dimension. Good for quick live tweaking and parameter-locked acid lines.
 
 | Knob | Fans out to |
 |:-----|:------------|
-| **Squelch** | Cutoff (log sweep across full range) + Reso (3000 → 13000) + Env Amt (5000 → 15000). The primary 303-character knob. |
+| **Squelch** | Cutoff (log sweep across full range) + Reso (3000 → 13000) + Env Amt (5000 → 15000). The primary 303-character knob — turns the entire filter sweep up together. |
 | **Grit** | Warp (full range) + Drive (0 → 12000). Adds oscillator-side shaping + filter overdrive together. |
-| **Envelope** | VCA Dec + VCF Dec + Release — longer envelopes for sustained parts, shorter for staccato. |
+| **Envelope** | VCA Dec + VCF Dec — longer envelopes for sustained parts, shorter for staccato. |
 | **Accent** | Accent toggle (0 = OFF, any value > 0 = ON) + Acc Lev intensity (0 → 12000). At 0, clean sound with full VCF Dec; above 0, accent kicks in proportionally. |
 {: .dada-minimal-table }
 
-The non-modulated params (Shape, Timbre, Color, filter Type) are held at `td3-acidbass` fixed defaults (`SAW|SQR`, moderate Timbre, ZDF-Boost filter). Use `td3-allparams` if you need to vary those.
+The non-modulated params (Shape, Timbre, Color, filter Type) are held at fixed defaults inside the macro (`SAW|SQR`, moderate Timbre, ZDF-Boost filter). Use `td3-allparams` or `td3-hybrid` if you need to vary those.
+
+No factory preset ships using `td3-acidbass` today — assign it to a track via the preset picker (Shift + FUNC3) or build a preset from scratch in the WebUI Preset Manager. The macro is otherwise fully functional.
+
+---
 
 ## Factory presets
 
-The preset picker name indicates which macro is behind the preset — `F` for the **Full** all-params macro (15 knobs), `P` for the **Performance** macro (4 knobs).
-
 | Preset | Macro | Character |
 |:-------|:------|:----------|
-| `F Default` | `td3-allparams` | Neutral starting point across every knob. Timbre and Color kept modest so `Tim EG` / `Col EG` have audible headroom. |
-| `F Acid` | `td3-allparams` | Classic 303 character — saw shape, dark low cutoff, high resonance, strong filter-env sweep, ~2 s VCA decay. |
-| `P Classic` | `td3-acidbass` | 303-style SAW squelch, cutoff sweeps high, moderate grit + accent. |
-| `P Dirty` | `td3-acidbass` | Aggressive cutoff, cranked grit + drive + accent. Harder hitting. |
+| `F Default` | `td3-allparams` | Neutral starting point across the full 15-knob surface. Timbre / Color kept modest so `Tim EG` / `Col EG` have audible headroom. The deep-edit baseline. |
+| `H Bass` | `td3-hybrid` | Punchy SAW + SUB layered acid bass on the 3-page layout. Tight Length/Sweep, mid Cutoff with strong Env, ZDF filter. The "go-to" preset for most acid-bass parts. |
+| `H Squelch` | `td3-hybrid` | Brighter squelchier variant on the same hybrid macro — higher Cutoff, more Reso, more Sweep. Compare against `H Bass` and pick whichever fits the track. |
 {: .dada-minimal-table }
+
+The preset picker name prefix tells you which macro is loaded: `F` = full 4-page deep-edit, `H` = hybrid 3-page. A `P` prefix would indicate a performance-macro preset on `td3-acidbass`; none ship today, but you can author your own and save under that prefix to keep the convention.
 
 ---
 
