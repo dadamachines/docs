@@ -96,14 +96,16 @@ The filter runs per-channel on L and R independently, using a TPT / Cytomic stat
 
 ## Parameters — TR.MIX page
 
+![Audio Input — TR.MIX page](../../../images/tbd-16/track_mixer.png){: .screenshot }
+
 Every track — including Input — has a **TR.MIX** page as the last page after the machine's own parameter pages. Navigate to it with the parameter-page arrows (`<` / `>` on the encoder row).
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **LEVEL** | Channel fader into the main mix, –60 dB to +12 dB. Displayed in dB on the OLED. Pull fully left for silence; the dedicated **Mute** button / pattern-mute system is the faster way to cut the track and correctly silences the Input's continuous audio regardless of LEVEL. |
+| **LEVEL** | Channel fader into the main mix. The fader uses a console-style squared curve — wire 0 = silence (`off` on the OLED), wire 64 (mid, default) = **0 dB unity** (signal passes through unchanged), wire 127 = **+12 dB** boost. Below wire ~10 the OLED reads "−60" or "off". Drop fully left to mute, push past mid to amplify the input above unity. The dedicated **Mute** button / pattern-mute system is the faster way to cut the track and correctly silences the Input's continuous audio regardless of LEVEL. |
 | **PAN**   | Stereo balance, `L` / `C` / `R`. Works on stereo sources too (reduces the opposite channel). |
-| **FX1**   | Aux send to effect bus 1, –60 dB to +12 dB. Default bus 1 carries a delay / slapback effect. |
-| **FX2**   | Aux send to effect bus 2, –60 dB to +12 dB. Default bus 2 carries a reverb. |
+| **FX1**   | Aux send to effect bus 1 (delay). Same scale as LEVEL: wire 0 = `off`, wire 64 = unity, wire 127 = +12 dB. |
+| **FX2**   | Aux send to effect bus 2 (reverb). Same scale as LEVEL. |
 {: .dada-minimal-table }
 
 Together these four provide the classic channel-strip controls. For more elaborate routing (swapping what's on FX1/FX2, changing FX parameters, adjusting bus levels), see [Mixer & Effects]({{ site.baseurl }}/tbd-16/mixer-and-effects/).
@@ -135,17 +137,20 @@ The Input track is a fully-featured sequencer track. You get:
 
 ---
 
-## Two kinds of input gain — don't confuse them
+## Where in the signal chain — gain stages on the Input path
 
-TBD-16 has **two independent gain stages** on the input path, and they do different things:
+The Input track has up to **three** independent gain points before the master bus:
 
-| Layer | Where it lives | When to touch it |
-|:------|:---------------|:-----------------|
-| **Codec ADC gain** | WebUI → Settings → Audio Configuration → *Input Level* slider | **Once per device**, when you plug in a new source. Tune it so your loudest passage is just below clipping at the ADC (hardware-level sensitivity). |
-| **Track Gain knob** | Input page, first knob, per preset | **Every session / per song**, for quick boosts, automation, and level matching against other tracks. Digital — won't add clipping if the ADC is already set correctly. |
+| Stage | Range | Where to touch it |
+|:------|:------|:------------------|
+| **Input page → Gain** | −60 .. +24 dB digital | Per-preset, accepts P-locks. The wide +24 dB ceiling (vs LEVEL's +12 dB) is for weak sources — dynamic mics, passive instrument DIs, low-output line gear. Default 0 dB unity. |
+| **Input page → Drive** | 1× .. 4× tanh | Per-preset, soft-clip saturation that adds harmonics + tames peaks. Default off. |
+| **TR.MIX → LEVEL** | off .. +12 dB | Per-track mixer fader, accepts P-locks, the live mixing knob. Default 0 dB unity. |
 {: .dada-minimal-table }
 
-Setting the codec gain correctly once means the track Gain knob has full ±12 dB range to work with without running into noise or clipping.
+Set **Input Gain** for source matching ("how hot does this mic / synth want to drive the device?"), then ride **LEVEL** on TR.MIX during the song. **Drive** is a creative tone tool — leave it off for clean passthrough.
+
+The codec's analog input PGA is configured at boot from `sdcard_image/user/config/device.json` and is not currently exposed as a runtime control on the OLED. Most users won't need to touch it; the digital Gain stage covers the typical −60 .. +24 dB range for any reasonable line-level or dynamic-mic source.
 
 ---
 
@@ -193,9 +198,22 @@ How our Input track compares to industry benchmarks and what's on the backlog.
 
 ## Origin & credits
 
-The Input machine is a custom CTAG `RackInput` voice — a minimal P4 DSP block that takes the codec's audio-in buffer, applies the post-ADC processing chain, and writes the result into the rack output where the mixer strip can pick it up. The wrapper is by Robert Manzke / CTAG (GPL 3.0). The Gain / Mono / HP / Drive processing stage was added in 2026-04 to give the Input track a usable parameter page alongside TR.MIX; the resonant SVF + envelope follower + track-mute-gate landed later the same month.
+The Input machine is a custom CTAG `RackInput` voice — a P4 DSP block that takes the codec's audio-in buffer, applies the post-ADC processing chain, and writes the result into the rack output where the per-track mixer strip picks it up. The wrapper builds on the CTAG-tbd plugin pattern by Robert Manzke / CTAG (GPL 3.0). The Gain / Mono / HP / Drive stage was added in 2026-04 to give the Input track a usable parameter page; the resonant SVF + envelope follower + track-mute-gate landed later the same month.
 
-- TBD-16 wrapper: `rack/RackInput.hpp` / `.cpp`
-- SVF topology: TPT / Cytomic state-variable (Andy Simper), one pair of integrators per channel
+**Per-block DSP order** (in `RackInput::Process`):
+
+1. Optional mono fold (`(L + R) / 2` to both channels) when **Mono** is on.
+2. Linear gain × `gain` where `gain = 10^(dB/20)` and `dB = -60 + (in_gain/4095) × 84` — the same formula as the OLED dB readout, so what you see is what's applied.
+3. One-pole high-pass at the **HP** cutoff (0..500 Hz, linear in DSP; the macro applies a `log` curve at the authoring layer for perceptual feel).
+4. `tanhf(sample * drive)` soft-clip when **Drive > 1.02×**.
+5. SVF stage when **Type** ≠ Off:
+   - Envelope follower with 5 ms attack / 100 ms release coefficients tracking `|post-drive sample|`.
+   - Cutoff modulated up to 4 octaves: `mod_fc = base_fc * 2^(env_amount × env_level × 4)`, clamped to 18 kHz.
+   - TPT (Cytomic / Andy Simper) state-variable filter, one pair of integrators per channel — gives `LP` / `BP` / `HP` outputs from the same internal state.
+
+Default values at boot: Gain = 0 dB unity (`in_gain = 2925`), Mono off, HP 0 Hz (bypassed), Drive 1× (bypassed), Type Off (SVF bypassed), Cutoff 12 kHz (open), Reso 0, Env 0.
+
+- TBD-16 wrapper: `components/ctagSoundProcessor/rack/RackInput.cpp` + `.hpp`
+- SVF topology: TPT / Cytomic state-variable (Andy Simper), one pair of integrators per channel.
 
 </div>
