@@ -52,6 +52,8 @@ The **Input page** shapes the signal right after it enters the P4 (gain staging,
 
 ## Parameters — Input page
 
+![Audio Input — INPUT page](../../../images/tbd-16/inp_input.png){: .screenshot }
+
 | Parameter | What it does |
 |:----------|:-------------|
 | **Gain**  | Pre-fader digital gain, **rendered as a dB fader** (same bar+numeric readout style as TR.MIX LEVEL). Range **–60 dB to +24 dB** — the extra +18 dB vs TR.MIX LEVEL is there to accommodate weak sources like dynamic mics and passive instrument DIs. Factory default is **0 dB unity** so a freshly-loaded Audio In preset passes the signal through at its codec level. Pull left to attenuate or mute, push right to boost up to +24 dB before the mixer. Hi-res 14-bit. |
@@ -68,6 +70,8 @@ The **Input page** shapes the signal right after it enters the P4 (gain staging,
 ---
 
 ## Parameters — Filter page
+
+![Audio Input — Filter page](../../../images/tbd-16/inp_filter.png){: .screenshot }
 
 A proper state-variable filter (SVF) sitting after Drive, with a built-in envelope follower that lets the input signal's own dynamics open the cutoff — classic auto-wah / dub-siren territory without tying up a dedicated CV source.
 
