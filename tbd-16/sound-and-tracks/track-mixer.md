@@ -24,11 +24,14 @@ The Track Mixer displays the per-track mixer parameters defined by the preset (t
 
 | Knob | Typical Parameter | Description |
 |:-----|:------------------|:------------|
-| Knob 1 | Level | Track output volume |
-| Knob 2 | Pan | Stereo position |
-| Knob 3 | FX1 Send | Amount sent to FX1 bus |
-| Knob 4 | FX2 Send | Amount sent to FX2 bus |
+| Knob 1 | Level | Track output volume — squared fader: wire 0 = `off`, wire 64 (default) = `0dB` unity, wire 127 = `+12dB` |
+| Knob 2 | Pan | Stereo position (0–127, 64 = center) |
+| Knob 3 | FX1 Send | Amount sent to FX1 (Delay) bus, 0–127 |
+| Knob 4 | FX2 Send | Amount sent to FX2 (Reverb) bus, 0–127 |
 {: .dada-minimal-table }
+
+{: .note }
+**Level reads as honest dB.** The same squared fader curve is used everywhere — per-track LEVEL, FX returns, Master Volume — so `0dB` means the same thing on Track Mixer, on the [Mixer](../mixer-and-effects/mixer) page, and on [Master Output](../mixer-and-effects/master). Defaults boot at unity (wire 64), so a fresh kit doesn't slam the soft-clip stage.
 
 {: .note }
 The exact parameter names and count come from the loaded preset. The shortnames shown on screen are defined by the preset data.

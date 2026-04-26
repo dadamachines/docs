@@ -52,6 +52,9 @@ Press `→` from Groups to page through individual tracks, four at a time:
 
 On track pages, **↑/↓** cycles through the same 5 parameter rows (Level, Pan, FX1, FX2, Filt).
 
+{: .note }
+**Level uses the squared fader curve** — wire 0 reads `off`, wire 64 (the default) reads `0dB` (unity), wire 127 reads `+12dB`. The same curve is used by the per-track LEVEL on Track Mixer, by the FX returns, and by Master Volume — so a value of `0dB` means the same thing everywhere on the device. Pan / FX1 / FX2 / Filt rows remain as 0–127 / −100..+100 deltas (no fader curve).
+
 ## Navigation
 
 | Action | Result |
