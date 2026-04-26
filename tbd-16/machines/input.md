@@ -124,7 +124,7 @@ The Input track is a fully-featured sequencer track. You get:
 - **MIDI-CC automation** — you can route external MIDI CCs to any Input-page, Filter-page or TR.MIX parameter via the MIDI mapping page; the sequencer records and plays those lanes on the Input track.
 
 {: .note }
-> **Per-step "gate"**: the Input passes audio continuously — it has no note-on trigger. For rhythmic gating, P-lock **LEVEL** (TR.MIX) or the **Filter Type** knob per step (set Type to `Off` on silent steps). True per-step recording-style gating is on the feature backlog (see [roadmap](#feature-roadmap)).
+> **Per-step "gate"**: the Input passes audio continuously — it has no note-on trigger. For rhythmic gating, P-lock **LEVEL** (TR.MIX) or the **Filter Type** knob per step (set Type to `Off` on silent steps).
 
 ---
 
@@ -151,40 +151,6 @@ The Input track has up to **three** independent gain points before the master bu
 Set **Input Gain** for source matching ("how hot does this mic / synth want to drive the device?"), then ride **LEVEL** on TR.MIX during the song. **Drive** is a creative tone tool — leave it off for clean passthrough.
 
 The codec's analog input PGA is configured at boot from `sdcard_image/user/config/device.json` and is not currently exposed as a runtime control on the OLED. Most users won't need to touch it; the digital Gain stage covers the typical −60 .. +24 dB range for any reasonable line-level or dynamic-mic source.
-
----
-
-## Feature roadmap
-
-How our Input track compares to industry benchmarks and what's on the backlog.
-
-### What we have
-
-- 4-knob post-ADC DSP (Gain, Mono, HP pre-filter, Drive)
-- 4-knob resonant SVF (Type, Cutoff, Reso, Env-follow)
-- Mixer-layer Level / Pan / Send1 / Send2
-- Per-step parameter locks on every knob (including filter mode and env amount)
-- Track mute that actually silences continuous audio
-- FX1/FX2 bus sends to master effects
-- Pattern/song integration
-
-### Common on similar devices — on our backlog
-
-| Feature | Seen on | Status |
-|:--------|:--------|:-------|
-| Input **level meter + clipping warning** on the parameter page | most groovebox devices | planned (telemetry from P4 → OLED strip next to Gain, inverted-red when sample peak ≥ −1 dBFS) |
-| 3-band EQ (Lo / Mid / Hi) | Elektron Digitakt/Octatrack, Pioneer Toraiz | future DSP page (EQ sits alongside the existing Filter, different job: static tonal shaping vs dynamic cutoff sweeps) |
-| Compressor / limiter with ratio + threshold | Elektron Digitakt II, NI Maschine | future DSP page |
-| Adjustable env-follower attack/release | most filter pedals | future polish (currently fixed at 5 ms / 100 ms) |
-| Sidechain ducking from other tracks | Elektron Syntakt, Maschine | future (routing-layer change) |
-| Per-step sampling trigger (input-record on a step) | Elektron Octatrack "Pickup Machine" | major feature, later |
-| Phase invert switch | some mixing surfaces | nice-to-have |
-| Low-latency live monitoring toggle | any live-input setup | needs hardware routing audit |
-
-### What we chose not to copy
-
-- **Real-time sampling into a slot** (Octatrack Pickup Machine) — intentionally deferred. TBD-16's sampler is the Rompler machine; one-shot sampling from the input is a future cross-machine feature.
-- **Heavy effects chain on the input track** — FX are shared across tracks via FX1/FX2 buses. Per-track effects would bloat memory and duplicate the FX bus work. Use the bus sends.
 
 ---
 
