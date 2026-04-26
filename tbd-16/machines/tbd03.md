@@ -34,7 +34,7 @@ Three macros ship for this machine — different layouts of the same DSP voice, 
 
 - **`td3-allparams`** — full 15-knob deep access across **4 pages** (Osc / Filter / Mod / Env). For sound design and per-parameter automation. Shipped preset: `F Default`.
 - **`td3-hybrid`** — semantic 3-page layout (Osc / Filter / Perf) that re-arranges the same parameters into more intuitive groupings, with a "performance" page collecting the live-tweak knobs. Shipped presets: `H Bass`, `H Squelch`.
-- **`td3-acidbass`** — 4-knob performance macro: `Squelch` / `Grit` / `Envelope` / `Accent`. Each knob fans out to multiple underlying DSP ctrls so one twist changes a whole aspect of the sound at once. Hi-res NRPN sources for smooth sweeps. No factory preset shipped today; create your own via the WebUI Preset Manager and assign this macro to a track.
+- **`td3-acidbass`** — 4-knob performance macro: `Squelch` / `Grit` / `Envelope` / `Accent`. Each knob fans out to multiple underlying DSP ctrls so one twist changes a whole aspect of the sound at once. Hi-res NRPN sources for smooth sweeps. Shipped presets: `P Classic`, `P Dirty`.
 
 The preset picker name prefix tells you which macro is behind a preset:
 - `F` — **Full** all-params macro (15 knobs across 4 pages).
@@ -242,8 +242,6 @@ Single-page 4-knob macro that collapses the 15-knob deep layout down to four "fa
 
 The non-modulated params (Shape, Timbre, Color, filter Type) are held at fixed defaults inside the macro (`SAW|SQR`, moderate Timbre, ZDF-Boost filter). Use `td3-allparams` or `td3-hybrid` if you need to vary those.
 
-No factory preset ships using `td3-acidbass` today — assign it to a track via the preset picker (Shift + FUNC3) or build a preset from scratch in the WebUI Preset Manager. The macro is otherwise fully functional.
-
 ---
 
 ## Factory presets
@@ -253,9 +251,11 @@ No factory preset ships using `td3-acidbass` today — assign it to a track via 
 | `F Default` | `td3-allparams` | Neutral starting point across the full 15-knob surface. Timbre / Color kept modest so `Tim EG` / `Col EG` have audible headroom. The deep-edit baseline. |
 | `H Bass` | `td3-hybrid` | Punchy SAW + SUB layered acid bass on the 3-page layout. Tight Length/Sweep, mid Cutoff with strong Env, ZDF filter. The "go-to" preset for most acid-bass parts. |
 | `H Squelch` | `td3-hybrid` | Brighter squelchier variant on the same hybrid macro — higher Cutoff, more Reso, more Sweep. Compare against `H Bass` and pick whichever fits the track. |
+| `P Classic` | `td3-acidbass` | Performance preset — moderate Squelch (~67 %), light Grit, mid Envelope, mid Accent. Classic 303 vibe through the 4-knob fan-out macro. Twist live. |
+| `P Dirty` | `td3-acidbass` | Performance preset — high Squelch (~85 %), heavy Grit, short Envelope, strong Accent. Aggressive distorted acid for darker tracks. |
 {: .dada-minimal-table }
 
-The preset picker name prefix tells you which macro is loaded: `F` = full 4-page deep-edit, `H` = hybrid 3-page. A `P` prefix would indicate a performance-macro preset on `td3-acidbass`; none ship today, but you can author your own and save under that prefix to keep the convention.
+The preset picker name prefix tells you which macro is loaded: `F` = full 4-page deep-edit, `H` = hybrid 3-page, `P` = performance 1-page (4-knob fan-out). You can also author your own preset via the WebUI Preset Manager and save it against any of the three macros.
 
 ---
 
