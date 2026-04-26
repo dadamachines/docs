@@ -86,6 +86,28 @@ A **Preset** is just the current values of all the knobs defined by a Macro — 
 
 Because a preset carries no information about *which* knobs to show, it can only be loaded against the Macro it was saved with. The device enforces this — the preset browser groups presets by Macro.
 
+### Preset name conventions
+
+Factory presets use a one-letter prefix to signal intent at a glance:
+
+| Prefix | Meaning |
+|:-------|:--------|
+| **F** | The "default" / flat starting point for the macro (e.g. `F Default`). Loading it gives you the macro's base sound with all knobs at their native defaults. |
+| **H** | A "hero" or showcase preset — the demo voicing, the one to play first when exploring the machine. |
+| **P** | A performance/character variant — opinionated tweaks meant for live use rather than a clean baseline. |
+{: .dada-minimal-table }
+
+The prefix is just a naming hint, not a behavioural distinction — every preset is technically just a values snapshot for its macro.
+
+### Factory vs. user overlay
+
+The SD card holds two parallel preset libraries:
+
+- **Factory** presets ship with the firmware and are protected — they reload from the firmware image whenever you reset to defaults.
+- **User** presets you save (on-device or in the WebUI) live in a separate user-overlay directory and persist across firmware updates.
+
+The on-device browser merges both libraries transparently — you don't normally need to think about the split. The WebUI File Manager exposes the two directories explicitly so you can back up your user overlay independently of factory content.
+
 ### The on-device Sound Preset browser
 
 Press **`Shift + FUNC3`** from any screen to open the Sound Preset browser.
@@ -138,6 +160,10 @@ Factory setups ship with the device (for example `default` and `sampler`) and ar
 > A Macro without any presets is perfectly fine — the device uses the Macro's default knob values. Presets just give you named snapshots to jump between.
 
 ---
+
+## Macros for FX1, FX2 and Master
+
+The same Machine / Macro / Preset model applies to the three bus tracks — **FX1** (delay), **FX2** (reverb) and **Master** (sum-bus + drive). Each ships with one or more macro layouts that decide how their parameters are paged across knobs, plus matching presets for quick recall. Open the WebUI Preset & Macro Manager and the track strip lets you select FX1, FX2 or Master alongside the 16 sound tracks; the picker handles all 19 tracks uniformly.
 
 ## See also
 

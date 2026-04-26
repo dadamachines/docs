@@ -40,7 +40,11 @@ Each page shows up to 4 parameters. The page name appears at the top of the scre
 
 Each parameter shows:
 - **Short name** — abbreviated label from the preset definition
-- **Value** — formatted according to parameter type (e.g., `20Hz`–`20.0k` for filter cutoff, `L50`/`C`/`R50` for pan, `-60dB`–`+6dB` for level)
+- **Value** — formatted according to parameter type:
+  - **Level / Volume** — `off` at the bottom, `0dB` at unity (the default for most level knobs), up to `+12dB` at the top. Same fader curve everywhere — see [Signal Flow](../mixer-and-effects/signal-flow) for why this is consistent across track LEVEL, FX returns and Master Volume.
+  - **Filter cutoff** — `20Hz` to `20.0k`
+  - **Pan** — `L50` / `C` / `R50`
+  - **Bipolar / scale / on-off** parameters — render as appropriate for their type (e.g. `±50%`, `1/4`, `on`/`off`)
 - **Automation prefix** — `L` for LFO, `R` for random modulation
 - **Lock indicator** — `<` appears when a step has a parameter lock set
 

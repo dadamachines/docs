@@ -48,5 +48,14 @@ From the right-hand panel:
 - Switch between **Banks view** (visual per-bank layout) and the raw **JSON editor**.
 - **Export / Import** kit backups as `.json` files.
 
+## Factory vs. user overlay
+
+Most data on the device — kits, macros, presets, samples, WebUI bundles — has both a **factory** copy (ships with the firmware, restored on factory reset) and a **user overlay** (anything you save or upload).
+
+The File Manager exposes both, but the read order is overlay-first: anything you upload to a user path takes precedence over the factory file with the same name. To go back to a factory file's behaviour, delete your user-overlay copy via the File Manager — the factory version takes over automatically.
+
+{: .note }
+> Factory files cannot be modified directly through normal upload — they're write-protected at the firmware level. The Factory Data section of the [System Updater]({{ site.baseurl }}/tbd-16/firmware-updates) is the supported path for replacing factory content.
+
 {: .note }
 > The File / Sample Manager edits content on the device's SD card. For safe removal, always power off the **tbd 16** before ejecting the card.
