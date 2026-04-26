@@ -177,6 +177,45 @@ Gated on `Accent`. When `Accent = OFF` (the factory default for `F Default`), `A
 
 ---
 
+## Accent: binary toggle vs continuous intensity — why the macros differ
+
+Confusing at first glance: the **deep-edit macros** show `Accent` as a binary `OFF` / `ON`, but the **performance macro** shows `Accent` as a continuous 0–100 % knob. Both are correct — they expose two different aspects of the same DSP behaviour.
+
+The TBD03 DSP has **two separate accent-related atomics**, both writable from macros:
+
+| DSP atomic | Type | What it controls |
+|:-----------|:-----|:-----------------|
+| **`accent`** (ctrl 19) | **Binary** in practice — used as a boolean `if (td3_isAccent) { … }` in `RackTBD03::Process`. Any non-zero value = accent ON. | When ON at note-trigger: shortens VCF Decay to a fixed short value (`kAccentDecay`) and multiplies VCA gain by `kAccentVCAFactor`. The classic 303 "extra punch" on accented notes. |
+| **`accent_level`** (ctrl 23) | **Continuous** 0..1 (hi-res 14-bit). | How much extra cutoff modulation depth the accent adds. Higher = sharper, more dramatic accent sweep. |
+{: .dada-minimal-table }
+
+In other words: `accent` is the *trigger flag* ("is this note accented?"), `accent_level` is the *intensity dial* ("how strong is the accent boost when it fires?").
+
+**Deep-edit macros (`td3-allparams`, `td3-hybrid`):** expose them as two separate knobs.
+- **`Accent` knob** (`max: 1`, `ui: onoff`) → just the binary trigger flag. P-lock per step for 303-style accent patterns.
+- **`Acc Lev` knob** (`max: 16383`, hi-res NRPN) → just the intensity. Set once for the song, then leave alone.
+
+**Performance macro (`td3-acidbass`):** collapses both into a single hi-res knob.
+- **`Accent` knob** (`max: 16383`, hi-res NRPN, fans out to BOTH ctrl 19 + ctrl 23):
+  - Wire 0 → both atomics = 0 → accent OFF, no boost.
+  - Wire > 0 → ctrl 19 receives the value (becomes truthy → accent ON) AND ctrl 23 receives a proportional value (sets the boost intensity).
+  - **Net effect**: rotating one knob smoothly takes you from "no accent at all" through "subtle accent" up to "full slammed 303 accent" without needing a separate flag-flip. Trade-off: you lose the ability to lock the trigger flag *off* without also zeroing the intensity (rare in practice — if you wanted no accent, you'd just leave the knob at 0).
+
+| Macro | Accent knob behaviour | Acc Lev exposed? |
+|:------|:----------------------|:-----------------|
+| `td3-allparams` | Binary `OFF` / `ON` | Yes — separate `Acc Lev` knob on Mod page |
+| `td3-hybrid` | Binary `OFF` / `ON` | No — `Acc Lev` not on the page; defaults from the preset apply |
+| `td3-acidbass` | Continuous 0–100 % (fan-out) | Implicit — driven by the same Accent knob |
+{: .dada-minimal-table }
+
+**Practical guidance:**
+- If you want classic 303 accent-on-some-steps patterns → use `td3-allparams` or `td3-hybrid`, P-lock the `Accent` toggle to `ON` on the steps you want accented, and dial `Acc Lev` on the song-level sound page.
+- If you want a single live-performance knob that smoothly takes you from "clean" to "fully accented" → use `td3-acidbass`. Twist the Accent knob during a take or P-lock it across steps for a continuous accent ramp.
+
+---
+
+---
+
 {: .note }
 > **Dialing a classic acid bass**:
 > 1. Set **Shape** to `SAW\|SQR` (2).
