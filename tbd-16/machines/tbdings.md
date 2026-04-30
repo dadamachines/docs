@@ -41,62 +41,61 @@ The Model knob picks one of 6 Rings resonator engines. The Easter toggle (Extra 
 
 ## Parameters
 
-The default TBDings performance macro is organised as **5 pages**.
+The default TBDings performance macro is organised as **5 pages**, ordered for live performance: voicing controls on page 1, envelope-driven dramatic controls on page 2, supportive controls on later pages. Mirrors the TBDaits layout convention (Voice / Mod / … with Model + engine-aware knob on page 1).
 
-### Reson
+### Voice
 
-The 4 main resonator controls. Pick a model, set tuning + structural character.
+The 4 main voicing controls. Model + Chord are adjacent because Chord's display is engine-aware (only audible when Model = SymQ or Easter is on).
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Freq** | Fine-tune detune (±2 semitones around the played MIDI note) |
-| **Struct** | Resonator structure parameter (per-model: inharmonicity, modal coupling, string interval, etc.) |
-| **Pos** | Excitation position along the resonator — closer to the centre = darker harmonics; off-centre = richer overtone mix |
 | **Model** | Engine selector (6 models — see table above) |
-{: .dada-minimal-table }
-
-### Timbre
-
-| Parameter | What it does |
-|:----------|:-------------|
+| **Chord** | Chord type. **Display reads "off" unless Model = SymQ (or Easter on)** — the knob is musically inert in the other 5 models, so the OLED tells the truth. Encoder still turns (you can pre-set the chord for when you switch into a chord-aware mode). 11 chord types: oct, 5, sus4, m, m7, m9, m11, 69, M9, M7, M |
 | **Bright** | Excitation brightness — opens / closes the resonator's tonal centre |
 | **Damp** | Resonator damping — short pluck (CCW) vs sustained ring (CW). The natural decay-time control |
-| **Chord** | Chord type for SymQ (and Easter on). 11 chord types: oct, 5, sus4, m, m7, m9, m11, 69, M9, M7, M. Stored value displayed even when current Model doesn't use it |
-| **Poly** | Internal polyphony: 1v / 2v / 4v. Higher polyphony = more overlap between strums |
-{: .dada-minimal-table }
-
-{: .note }
-> **Chord is engine-specific.** The Chord knob is only audible when **Model = SymQ** or the Easter toggle is on. The OLED still shows the chord setting (so you can dial it in advance), but you'll only hear the chord voicing once you switch into a chord-aware model.
-
-### Env
-
-A 5-shape envelope morph + velocity-routed wavefolder + AIR continuous excitation.
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **EnvSh** | Envelope shape morph (0..4 interpolated). 0 = fastest pluck → 4 = slow attack with long sustain |
-| **VelAmt** | Velocity → wavefolder drive amount. Higher velocity = harder fold = richer harmonics |
-| **Air** | Continuous noise excitation amount. AIR turns the resonator into a hummed drone at the played pitch — try this for steel-pan or wind-chime textures |
-| **Pluck** | Pluck CC trigger (rising-edge). Strums the resonator without re-attacking the envelope — useful for repeated plucks at the same envelope state |
 {: .dada-minimal-table }
 
 ### Mod
 
-Output-stage modulation: tremolo / AM with three modes, plus optional harmonic-snap quantizer.
+Output-stage modulation drama controls (tremolo / AM with three modes, plus optional harmonic-snap quantizer) — one click from the Voice page for performance build/drops.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **MType** | Modulation mode: **Trem** (sine tremolo), **PEnv** (per-strum pitch envelope down from 2× note frequency), **Poly** (pitch-relative AM) |
 | **MDpth** | Modulation depth — the universal "drama" knob for build-ups and drops |
 | **MRate** | Modulation rate (mode-dependent: tremolo Hz, pitch-env decay speed, AM ratio) |
+| **MType** | Modulation mode: **Trem** (sine tremolo), **PEnv** (per-strum pitch envelope down from 2× note frequency), **Poly** (pitch-relative AM) |
 | **MSnap** | Quantize harmonic-snap toggle — when on (in Poly mode), the AM frequency snaps to harmonic ratios of the played note (0.5×, 1×, 2×, 3×, 4×, 5×, 6×, 8×) |
+{: .dada-minimal-table }
+
+### Excite
+
+Excitation source + envelope shape — controls how the resonator is driven.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Air** | Continuous noise excitation amount. AIR turns the resonator into a hummed drone at the played pitch — try this for steel-pan or wind-chime textures. The global AIR master CC (channel 13 / CC 67) fans across all enabled TBDings instances |
+| **Pluck** | Pluck CC trigger (rising-edge). Strums the resonator without re-attacking the envelope — useful for repeated plucks at the same envelope state |
+| **VelAmt** | Velocity → wavefolder drive amount. Higher velocity = harder fold = richer harmonics |
+| **EnvSh** | Envelope shape morph — interpolates between 5 named shapes: **Plck** (fastest pluck) → **Soft** (slower decay) → **Snap** (sustained snap) → **Bow** (slow bow) → **Pad** (slowest attack/release) |
+{: .dada-minimal-table }
+
+### Reson
+
+Secondary resonator controls — pitch detune, structural character, polyphony.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Freq** | Pitch detune (±12 semitones / 1 octave around the played MIDI note). Hi-res NRPM knob — sub-cent precision at center, octave at extremes |
+| **Struct** | Resonator structure parameter (per-model: inharmonicity, modal coupling, string interval, etc.) |
+| **Pos** | Excitation position along the resonator — closer to the centre = darker harmonics; off-centre = richer overtone mix |
+| **Poly** | Internal polyphony: 1v / 2v / 4v. Higher polyphony = more overlap between strums |
 {: .dada-minimal-table }
 
 ### Extra
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Easter** | Easter toggle — overrides Model with SymQ. Use it for one-handed chord-mode switching without losing your Model setting |
+| **Easter** | Engine override — flips the active model to SymQ regardless of the Model knob setting. Use it for one-handed chord-mode switching without losing your Model selection. When Easter is on, the Chord knob's display switches from "off" to live chord names automatically |
 {: .dada-minimal-table }
 
 ---
