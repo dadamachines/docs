@@ -64,8 +64,15 @@ Output-stage modulation drama controls (tremolo / AM with three modes, plus opti
 | **MDpth** | Modulation depth — the universal "drama" knob for build-ups and drops |
 | **MRate** | Modulation rate (mode-dependent: tremolo Hz, pitch-env decay speed, AM ratio) |
 | **MType** | Modulation mode: **Trem** (sine tremolo), **PEnv** (per-strum pitch envelope down from 2× note frequency), **Poly** (pitch-relative AM) |
-| **MSnap** | Quantize harmonic-snap toggle — when on (in Poly mode), the AM frequency snaps to harmonic ratios of the played note (0.5×, 1×, 2×, 3×, 4×, 5×, 6×, 8×) |
+| **MSnap** | Harmonic-snap quantizer for Poly mode. When **MType = Poly**, snaps the AM frequency to harmonic ratios of the played note (0.5×, 1×, 2×, 3×, 4×, 5×, 6×, 8×). **Display reads "off" when MType ≠ Poly** — the toggle is musically inert in Trem and PEnv modes, so the OLED tells the truth. Encoder still works (you can pre-set the snap value before switching to Poly) |
 {: .dada-minimal-table }
+
+{: .note }
+> **Two engine-aware knobs that say "off" when inert.** TBDings has two controls that the underlying DSP only consults in specific modes:
+> - **Chord** — only audible when **Model = SymQ** (or Easter on). Reads "off" in the other 5 models.
+> - **MSnap** — only meaningful when **MType = Poly**. Reads "off" in Trem and PEnv modes.
+>
+> In both cases the encoder still turns (so you can pre-set the value for when you switch into the active mode) — only the visible readout reflects the current functional state. This honest-display pattern means you never wonder "is this knob broken?" — the OLED tells you whenever the knob is currently doing nothing.
 
 ### Excite
 
