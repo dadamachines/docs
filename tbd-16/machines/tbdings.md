@@ -1,0 +1,159 @@
+---
+layout: default
+title: TBDings
+parent: Machines
+grand_parent: tbd 16 groovebox
+nav_order: 17
+---
+
+# TBDings
+
+A modal / string-resonator voice covering plucked strings, struck modal bars, sympathetic strings (with chord quantization) and FM-bell timbres — wrapped with a wavefolder, a 5-shape envelope, three modulation modes (tremolo · pitch-envelope AM · polyphonic AM with optional harmonic snap) and a continuous AIR excitation source for steel-pan / wind-chime drone work.
+{: .fs-6 .fw-300 }
+
+**Available on:** Track 12 (default boot host) and Track 15 (selectable). Each instance is independently allocated — you can host TBDings twice for layered resonators.  
+**Built on:** **Mutable Instruments Rings** (modal resonator + sympathetic-string synthesis).
+
+---
+
+## Character
+
+Rings is a physical-modelling resonator — strike it with a pluck or excite it with continuous noise (AIR), and the model rings out per the resonator's material, structure and damping. Each Rings model brings a different timbre family: modal bars, string clusters, FM bells, sympathetically-resonating string sets.
+
+The TBD-16 wrapper adds a **post-Rings wavefolder** for harmonic grit (velocity-driven), three **modulation modes** for tremolo / AM / polyphonic-AM drama, a **5-shape envelope morph** for plucked-vs-sustained character, and a global **AIR** master that fans across both TBDings slots — turn AIR up and the resonator hums at the played pitch continuously, even between notes.
+
+---
+
+## Models
+
+The Model knob picks one of 6 Rings resonator engines. The Easter toggle (Extra page) overrides any selection with **SymQ** (sympathetic-strings quantized) — useful for one-handed switching to chord mode.
+
+| Label | Engine | Character |
+|---|---|---|
+| **Modal** | Modal resonator | Bell- / bar-like modal voice; the most "tuned" character |
+| **Symp** | Sympathetic strings | Multi-string cluster; chord knob silent here |
+| **Strg** | Inharmonic string (Karplus) | Plucked-string with inharmonicity |
+| **FM** | FM-voice | Bell / metallic FM timbres |
+| **SymQ** | Sympathetic strings, quantized | Chord-aware sympathetic strings — Chord knob picks the chord type |
+| **S+Rv** | String + reverb | Plucked string with internal reverb tail |
+
+---
+
+## Parameters
+
+The default TBDings performance macro is organised as **5 pages**.
+
+### Reson
+
+The 4 main resonator controls. Pick a model, set tuning + structural character.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Freq** | Fine-tune detune (±2 semitones around the played MIDI note) |
+| **Struct** | Resonator structure parameter (per-model: inharmonicity, modal coupling, string interval, etc.) |
+| **Pos** | Excitation position along the resonator — closer to the centre = darker harmonics; off-centre = richer overtone mix |
+| **Model** | Engine selector (6 models — see table above) |
+{: .dada-minimal-table }
+
+### Timbre
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Bright** | Excitation brightness — opens / closes the resonator's tonal centre |
+| **Damp** | Resonator damping — short pluck (CCW) vs sustained ring (CW). The natural decay-time control |
+| **Chord** | Chord type for SymQ (and Easter on). 11 chord types: oct, 5, sus4, m, m7, m9, m11, 69, M9, M7, M. Stored value displayed even when current Model doesn't use it |
+| **Poly** | Internal polyphony: 1v / 2v / 4v. Higher polyphony = more overlap between strums |
+{: .dada-minimal-table }
+
+{: .note }
+> **Chord is engine-specific.** The Chord knob is only audible when **Model = SymQ** or the Easter toggle is on. The OLED still shows the chord setting (so you can dial it in advance), but you'll only hear the chord voicing once you switch into a chord-aware model.
+
+### Env
+
+A 5-shape envelope morph + velocity-routed wavefolder + AIR continuous excitation.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **EnvSh** | Envelope shape morph (0..4 interpolated). 0 = fastest pluck → 4 = slow attack with long sustain |
+| **VelAmt** | Velocity → wavefolder drive amount. Higher velocity = harder fold = richer harmonics |
+| **Air** | Continuous noise excitation amount. AIR turns the resonator into a hummed drone at the played pitch — try this for steel-pan or wind-chime textures |
+| **Pluck** | Pluck CC trigger (rising-edge). Strums the resonator without re-attacking the envelope — useful for repeated plucks at the same envelope state |
+{: .dada-minimal-table }
+
+### Mod
+
+Output-stage modulation: tremolo / AM with three modes, plus optional harmonic-snap quantizer.
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **MType** | Modulation mode: **Trem** (sine tremolo), **PEnv** (per-strum pitch envelope down from 2× note frequency), **Poly** (pitch-relative AM) |
+| **MDpth** | Modulation depth — the universal "drama" knob for build-ups and drops |
+| **MRate** | Modulation rate (mode-dependent: tremolo Hz, pitch-env decay speed, AM ratio) |
+| **MSnap** | Quantize harmonic-snap toggle — when on (in Poly mode), the AM frequency snaps to harmonic ratios of the played note (0.5×, 1×, 2×, 3×, 4×, 5×, 6×, 8×) |
+{: .dada-minimal-table }
+
+### Extra
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Easter** | Easter toggle — overrides Model with SymQ. Use it for one-handed chord-mode switching without losing your Model setting |
+{: .dada-minimal-table }
+
+---
+
+## Global AIR master
+
+Track 13's CC 67 acts as a **TBDings AIR master**: the value fans out to every enabled TBDings instance's Air parameter, letting you crossfade between "all dry" and "all hummed drone" with a single CC. Useful in performance for one-handed AIR control across both TBDings slots simultaneously.
+
+---
+
+{: .tip }
+> Set Model = **SymQ** (or flip Easter on), pick a chord with the Chord knob (now 11 snappy detents), and play a single MIDI root note — TBDings voices the full chord on the resonator. Lock Chord per step in the sequencer to step through chord progressions on a held root.
+
+{: .tip }
+> Crank **Air** for drone work — the resonator hums continuously at the played pitch even between sequencer steps. Combine with Damp at the top of its range for sustained pad textures.
+
+{: .tip }
+> Use **MType = PEnv** with high **MDpth** for a per-strum pitch-down "talking" effect — each note attacks from above the played pitch and falls toward it. Great for melodic bass plucks.
+
+---
+
+## Playing TBDings
+
+**With the sequencer**: per-step velocity drives the wavefolder via VelAmt, so harder steps sound brighter / crunchier. Lock Chord per step (in SymQ mode) to step through chord changes on a sustained root note. Lock MType for drama drops (kick into Poly AM with MSnap on for sudden timbre shifts).
+
+**With an external keyboard**: each note re-strums the resonator. Held keys sustain via the resonator's natural decay (Damp knob controls the decay time). The Pluck CC can re-strum without re-triggering the envelope — useful for staccato pluck patterns over a single held envelope state.
+
+**Two TBDings slots**: Track 12 hosts TBDings as the boot default; Track 15 can also host TBDings (selectable from the Setup screen). Each instance has its own preset, params and AIR value — but the global AIR master CC fans across both, letting you crossfade them together.
+
+---
+
+## See also
+
+- [TBDaits](tbdaits) — 24-engine Plaits-extended voice (DX7 / Wave Terrain / String Machine and more).
+- [Mono Synth](mono-synth) — single-engine Braids-based monophonic alternative.
+- [PolyPad](polypad) — chord-pad voice with built-in chord generator.
+
+<div class="origin-card" markdown="1">
+
+## Origin & credits
+
+TBDings wraps the **Mutable Instruments Rings** modal-resonator DSP for the TBD-16 PicoSeqRack plugin host.
+
+Rings is © 2015 Émilie Gillet, MIT-licensed. The DSP provides 6 resonator models (Modal, Sympathetic Strings, Inharmonic String, FM Voice, Sympathetic-Strings-Quantized, String + Reverb) plus an internal strummer for note-onset detection.
+
+The TBD-16 wrapper adds:
+- A **5-shape envelope morph** + velocity-routed **wavefolder** for harmonic grit
+- Three **modulation modes** (Tremolo / Pitch-Envelope AM / Polyphonic AM with optional harmonic snap)
+- A **continuous AIR excitation** source so the resonator can hum at note pitch between strums
+- A **global AIR master** CC fanning across all TBDings instances for performance-grade single-knob drone control
+- An **Easter toggle** for one-handed switching to chord-aware SymQ mode
+- PSRAM placement-new for `rings::Part` + `rings::Strummer` so the wrapper doesn't blow the PicoSeqRack object size budget
+
+The wrapper's design draws from the Korg phase8-style "single-strum acoustic synthesis" idiom — the project codename internally is "FaseAcht."
+
+- DSP source: `rings/dsp/part.{h,cc}` and `rings/dsp/strummer.{h,cc}`
+- TBD-16 wrapper: `rack/RackTBDings.{hpp,cpp}` (PicoSeqRack)
+- Related reading: [Rings module manual (Mutable Instruments)](https://pichenettes.github.io/mutable-instruments-documentation/modules/rings/manual/)
+
+</div>
