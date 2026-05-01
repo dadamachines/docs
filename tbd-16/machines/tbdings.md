@@ -11,7 +11,7 @@ nav_order: 17
 A modal / string-resonator voice covering plucked strings, struck modal bars, sympathetic strings (with chord quantization) and FM-bell timbres — wrapped with a wavefolder, a 5-shape envelope, three modulation modes (tremolo · pitch-envelope AM · polyphonic AM with optional harmonic snap) and a continuous AIR excitation source for steel-pan / wind-chime drone work.
 {: .fs-6 .fw-300 }
 
-**Available on:** Track 12 (default boot host) and Track 15 (selectable). Each instance is independently allocated — you can host TBDings twice for layered resonators.  
+**Available on:** Track 12 (Lead2) and Track 15 (Chordo) — selectable on both, alongside the track defaults (Wavetable Osc on Lead2, PolyPad on Chordo). Each instance is independently allocated — you can host TBDings twice for layered resonators.  
 **Built on:** **Mutable Instruments Rings** (modal resonator + sympathetic-string synthesis).
 
 ---

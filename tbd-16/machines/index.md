@@ -52,7 +52,9 @@ Click a Machine for the full profile — origin, character, parameters, and tips
 |:--------|:----------|:---------|
 | [TBD03](tbd03) | 303-style acid line | Braids oscillator + diode-ladder filter |
 | [Mono Synth](mono-synth) | Versatile mono voice | Mutable Instruments Braids macro oscillator |
-| [Wavetable Osc](wavetable-osc) | Wavetable lead / pad | Braids-based wavetable oscillator |
+| [Wavetable Osc](wavetable-osc) | Wavetable lead / pad | Mutable Instruments Plaits wavetable oscillator |
+| [TBDaits](tbdaits) | 24-engine macro voice (DX7-style FM, wavetable, chord, speech, granular, physical models, …) | Mutable Instruments Plaits macro voice + CTAG AHR envelope |
+| [TBDings](tbdings) | Dual-engine modal / plucked-string resonator | Mutable Instruments Rings (Modal + Plucked) |
 | [PolyPad](polypad) | 24-voice chord pad | CTAG `ChordSynth` / PolyPad |
 {: .dada-minimal-table }
 
@@ -89,6 +91,8 @@ Which Machines each track can host. A dot (●) means the Machine is available o
 | [TBD03](tbd03)                   |   |   |   |   |   |   |   |   | ● | ●  |    |    |    |    |    |    |
 | [Mono Synth](mono-synth)         |   |   |   |   |   |   |   |   |   |    | ●  | ●  |    |    |    |    |
 | [Wavetable Osc](wavetable-osc)   |   |   |   |   |   |   |   |   |   |    |    | ●  |    |    |    |    |
+| [TBDaits](tbdaits)               |   |   |   |   |   |   |   |   |   |    |    | ●  |    |    |    |    |
+| [TBDings](tbdings)               |   |   |   |   |   |   |   |   |   |    |    | ●  |    |    | ●  |    |
 | [PolyPad](polypad)               |   |   |   |   |   |   |   |   |   |    |    |    |    |    | ●  |    |
 | [Rompler](rompler)               | ● | ● | ● | ● | ● | ● | ● | ● | ● | ●  | ●  | ●  | ●  | ●  | ●  |    |
 | [Input](input)                   |   |   |   |   |   |   |   |   |   |    |    |    |    |    |    | ●  |
@@ -116,7 +120,7 @@ If you want a mostly-sample-based kit, load the **sampler** track setup from the
 The **tbd 16**'s sound engines are the result of open-source work from several communities. On-device Machines are drawn from:
 
 - **CTAG TBD** by **Robert Manzke** (Creative Technologies Arbeitsgruppe, FH Kiel) — the Rompler, Clap, Rimshot, PolyPad, FM Kick and the TBD03 acid-bass voice. Licensed under GPL 3.0. See the [CTAG TBD project](https://github.com/ctag-fh-kiel/ctag-tbd).
-- **Mutable Instruments** open-source DSP — *Plaits* drum models power the Synth Kick, Analog Bass Drum, Digital/Analog Snare and the Hi-Hats; *Braids* provides the macro oscillator used by Mono Synth, Wavetable Osc and the TBD03 acid bass. Originally released by Émilie Gillet, MIT-licensed.
+- **Mutable Instruments** open-source DSP — *Plaits* drum models power the Synth Kick, Analog Bass Drum, Digital/Analog Snare and the Hi-Hats; *Plaits* also provides the wavetable oscillator (Wavetable Osc) and the 24-engine macro voice (TBDaits); *Braids* provides the macro oscillator used by Mono Synth and the TBD03 acid bass; *Rings* powers TBDings' modal/plucked resonators. Originally released by Émilie Gillet, MIT-licensed.
 - **TBD-16 integration layer** (`rack/*`, macro/preset system) by **Per-Olov Jernberg** (possan), LGPL 3.0.
 
 Every `Rack*` file in the TBD-16 source lists the upstream header it wraps, so the exact lineage for every Machine is traceable in code.

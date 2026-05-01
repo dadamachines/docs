@@ -11,7 +11,7 @@ nav_order: 16
 A 24-engine macro-oscillator voice spanning virtual analog, FM (incl. **DX7-style 6-operator** synthesis with 3 banks of 32 patches), additive, wavetable, chord, speech, granular, particle / string / modal physical models, and analog drum models — driven by a wrapper-side AHR envelope so held keys sustain and release on key-up.
 {: .fs-6 .fw-300 }
 
-**Available on:** Track 12 (default boot host). Selectable on Lead2 alongside other lead voices.  
+**Available on:** Track 12 (Lead2) — selectable alongside Wavetable Osc (default boot host), Mono Synth and TBDings.  
 **Built on:** **Mutable Instruments Plaits** firmware 1.2 (extended 24-engine registry — orange / green / red banks).
 
 ---

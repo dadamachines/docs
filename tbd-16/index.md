@@ -30,6 +30,7 @@ This manual documents the **Groovebox** app, which ships installed on the **tbd 
 | [Getting Started](getting-started/) | Overview, hardware layout, navigation |
 | [Sequencer](sequencer/) | Tempo, patterns, step editing, parameter locks |
 | [Sound & Tracks](sound-and-tracks/) | Sound parameters, track mixer, presets |
+| [Machines](machines/) | Sound engines per track — drum synths, tonal voices, sampler, input |
 | [Mixer & Effects](mixer-and-effects/) | Signal flow, global mixer, delay, reverb, master output |
 | [Project & Settings](project-and-settings/) | Project management, MIDI, display, WiFi, utilities |
 | [WebUI](webui/) | File manager and preset/macro manager in the browser |
