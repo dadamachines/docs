@@ -22,135 +22,87 @@ Braids provides the tonal source — saw, square, FM, and many other Braids synt
 
 {: .warning }
 > **Gotchas before you tweak:**
-> - **Slide** is not yet wired in the firmware — setting per-step slide currently has no audible effect. Tracked as a follow-up DSP task. Use pitch glides via tied steps as a workaround.
-> - **Accent** is a per-track toggle controlled by the Accent knob (and P-lockable per step). Any knob value above 0 turns accent ON. For alternating-step 303 accent patterns, parameter-lock the Accent knob on the steps you want accented.
-> - **Tim EG, Col EG, Acc Lev are conditional knobs** — they only produce audible change when their dependencies are in place. See [Conditional modulation knobs](#conditional-modulation-knobs) below.
+> - **Drive** only audibly affects filter Type 0 (`PrZB` — Pirkle ZDF + Boost). On the other four filter types it shows `off` in the readout because the DSP doesn't apply gain to those filters. The encoder still works on any Type so you can pre-set Drive before switching to `PrZB`.
+> - **Acc Lev** only matters when **Accent is ON**. With Accent off it reads `off` regardless of the knob position — encoder still works for pre-setting.
+> - **Tim EG and Col EG are conditional knobs** — they only produce audible change when `VCF Dec` is up and base `Timbre` / `Color` have headroom. See [Conditional modulation knobs](#conditional-modulation-knobs) below.
+> - **Slide** smooths pitch between connected notes (one-pole IIR, ~7 ms time constant). Glide is subtle but audible — toggle it on for tied 303-style runs, off for staccato lines.
 
 ---
 
 ## Macros
 
-Three macros ship for this machine — different layouts of the same DSP voice, pick the one that matches how you want to perform:
+One macro ships for this machine — `td3-allparams`. The full 16-knob deep-access layout across **4 pages** (Filter / Osc / Mod / Perf), with engine-aware conditional rendering on the Drive and Acc Lev knobs.
 
-- **`td3-allparams`** — full 15-knob deep access across **4 pages** (Osc / Filter / Mod / Env). For sound design and per-parameter automation. Shipped preset: `F Default`.
-- **`td3-hybrid`** — semantic 3-page layout (Osc / Filter / Perf) that re-arranges the same parameters into more intuitive groupings, with a "performance" page collecting the live-tweak knobs. Shipped presets: `H Bass`, `H Squelch`.
-- **`td3-acidbass`** — 4-knob performance macro: `Squelch` / `Grit` / `Envelope` / `Accent`. Each knob fans out to multiple underlying DSP ctrls so one twist changes a whole aspect of the sound at once. Hi-res NRPN sources for smooth sweeps. Shipped presets: `P Classic`, `P Dirty`.
-
-The preset picker name prefix tells you which macro is behind a preset:
-- `F` — **Full** all-params macro (15 knobs across 4 pages).
-- `H` — **Hybrid** layout (3 pages with Perf grouping).
-- `P` — **Performance** macro (4 fan-out knobs).
+Earlier feature-test builds also shipped a `td3-hybrid` 3-page layout and a `td3-acidbass` 4-knob performance macro. Those have been retired in favour of focusing the redesign effort on a single well-tuned page layout — every parameter is reachable from `td3-allparams`, and the new conditional renderers (Drive `off` when Type ≠ `PrZB`; Acc Lev `off` when Accent off) make the deeper macro readable enough that the simplified hybrid no longer earns its keep.
 
 ---
 
-## `td3-allparams` — page layout (4/4/4/3)
+## `td3-allparams` — page layout (4/4/4/4)
 
-The deep-access macro. Every shipped TBD03 sound exposing the full parameter surface uses this layout.
+The deep-access macro. Every shipped TBD03 sound exposing the full parameter surface uses this layout. The May 2026 redesign reorganised the pages around live-performance flow — the filter section sits up front because that's where the daily 303 squelch tweaks happen.
 
 | Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
 |:-----|:-------|:-------|:-------|:-------|
+| **Filter** | Cutoff | Reso | Env Amt | VCF Dec |
 | **Osc** | Shape | Timbre | Color | Warp |
-| **Filter** | Cutoff | Reso | Type | Drive |
-| **Mod** | Env Amt | Tim EG | Col EG | Acc Lev |
-| **Env** | VCA Dec | VCF Dec | Accent | — |
-{: .dada-minimal-table }
-
-### Osc
-
-![td3-allparams — Osc page](../../../images/tbd-16/td3_all_osc.png){: .screenshot }
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **Shape** | Braids synthesis model (47 shapes, same catalogue as Mono Synth). `SAW\|SQR` (shape 2) is the classic acid starting point. |
-| **Timbre** | Braids parameter 0 (model-specific). Hi-res 14-bit. *See note on base-level headroom below if using Tim EG.* |
-| **Color** | Braids parameter 1 (model-specific). Hi-res 14-bit. *See note on base-level headroom below if using Col EG.* |
-| **Warp** | Signature waveshaper amount — adds analog-style fold/grit at the oscillator stage. Hi-res 14-bit. |
+| **Mod** | Tim EG | Col EG | Acc Lev | Accent |
+| **Perf** | Type | Drive | Slide | VCA Dec |
 {: .dada-minimal-table }
 
 ### Filter
 
 ![td3-allparams — Filter page](../../../images/tbd-16/td3_all_filter.png){: .screenshot }
 
+The live-performance hot zone — these four knobs are the daily 303 squelch controls.
+
 | Parameter | What it does |
 |:----------|:-------------|
-| **Cutoff** | Filter cutoff frequency. Hi-res 14-bit with log curve for smooth sweeps. |
+| **Cutoff** | Filter cutoff frequency, log-mapped 20 Hz → 22 kHz. Equal octaves per fraction of knob travel — sub-150 Hz region gets useful resolution instead of a dead zone. Hi-res 14-bit. |
 | **Reso** | Filter resonance — crank for squelch. Hi-res. |
-| **Type** | Filter topology: `0` ZDF-Boost (aggressive), `1` Karlson (warm), `2` Blaukraut (vintage), `3` Pirkle ZDF (clean). Four modes 0–3. *(A fifth internal mode exists in the DSP but is unreachable via macro — ignore until a firmware fix lands.)* |
-| **Drive** | Filter input drive / soft-clip gain 1×–30×. Hi-res. |
+| **Env Amt** | Filter-envelope amount — how much the VCF envelope opens the cutoff. Classic 303 squelch lives here. Hi-res. |
+| **VCF Dec** | Filter envelope decay, 0–5 s exponential (Accent shortens this to 0.5 s for per-step sharpness). Hi-res. |
+{: .dada-minimal-table }
+
+### Osc
+
+![td3-allparams — Osc page](../../../images/tbd-16/td3_all_osc.png){: .screenshot }
+
+Timbre selection + waveshaping. Pick the shape and base timbre, then dial Warp for grit. The full 47-shape Braids catalogue is reachable across the knob travel (`res:10` matches Mono Synth's encoder feel — one click ≈ one shape).
+
+| Parameter | What it does |
+|:----------|:-------------|
+| **Shape** | Braids synthesis model (47 shapes, same catalogue as Mono Synth). `SAW\|SQR` (shape 2) is the classic acid starting point. |
+| **Timbre** | Braids parameter 0 (model-specific). Hi-res 14-bit. *See note on base-level headroom below if using Tim EG.* |
+| **Color** | Braids parameter 1 (model-specific). Hi-res 14-bit. *See note on base-level headroom below if using Col EG.* |
+| **Warp** | Signature waveshaper blend (Mutable Instruments' Braids "signature" curve, deterministically seeded). Sweeps from clean to fully waveshaped. Hi-res 14-bit. **Default value 0** — the knob has no audible effect at rest; sweep upward to hear it. |
 {: .dada-minimal-table }
 
 ### Mod
 
 ![td3-allparams — Mod page](../../../images/tbd-16/td3_all_mod.png){: .screenshot }
 
+Modulation depth + accent emphasis. Both Tim EG / Col EG are filter-envelope-driven (require `VCF Dec > 0` to be audible). Acc Lev only matters when Accent is on.
+
 | Parameter | What it does |
 |:----------|:-------------|
-| **Env Amt** | Filter-envelope amount — how much the VCF envelope opens the cutoff. Classic 303 squelch lives here. Hi-res. |
 | **Tim EG** | VCF envelope → Timbre modulation amount. Hi-res. **Conditional — see below.** |
 | **Col EG** | VCF envelope → Color modulation amount. Hi-res. **Conditional — see below.** |
-| **Acc Lev** | Accent level — extra cutoff boost when Accent is ON. Hi-res. **Conditional — see below.** |
-{: .dada-minimal-table }
-
-### Env
-
-![td3-allparams — Env page](../../../images/tbd-16/td3_all_env.png){: .screenshot }
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **VCA Dec** | Amplitude envelope decay, 0–5 s exponential. Hi-res. |
-| **VCF Dec** | Filter envelope decay, 0–5 s exponential (Accent shortens this to 0.5 s for per-step sharpness). Hi-res. |
+| **Acc Lev** | Accent intensity — extra cutoff boost when Accent is ON. Renders as `off` when Accent toggle is off. Hi-res. |
 | **Accent** | `OFF`/`ON` — per-track accent toggle. Shortens VCF Dec and boosts VCA gain + cutoff when ON. Lock per-step for 303-style accent patterns. |
-{: .dada-minimal-table }
-
----
-
-## `td3-hybrid` — page layout (4/4/4)
-
-A semantic re-grouping of the same DSP into 3 pages. Same parameters, different organisation: **Osc** brings shape + the two timing knobs (Length / Sweep) into one page, **Filter** keeps Cutoff/Reso/Env/Type together, and **Perf** collects the four "live tweak" controls (Warp / Drive / Motion / Accent) on a single page for fast performance edits.
-
-| Page | Knob 1 | Knob 2 | Knob 3 | Knob 4 |
-|:-----|:-------|:-------|:-------|:-------|
-| **Osc** | Shape | Timbre | Length | Sweep |
-| **Filter** | Cutoff | Reso | Env | Type |
-| **Perf** | Warp | Drive | Motion | Accent |
-{: .dada-minimal-table }
-
-### Osc
-
-![td3-hybrid — Osc page](../../../images/tbd-16/td3_hybrid_osc.png){: .screenshot }
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **Shape** | Braids synthesis model (same 47-shape catalogue). `SAW\|SUB` (shape 6) is the classic acid bass starting point on this macro. |
-| **Timbre** | Braids parameter 0 (model-specific). Hi-res 14-bit. |
-| **Length** | VCA decay alias — controls how long each note sustains. Hi-res, exponential. Same DSP target as `VCA Dec` on the all-params macro. |
-| **Sweep** | VCF decay alias — controls how long the filter envelope sweeps before settling. Hi-res, exponential. Same DSP target as `VCF Dec`. |
-{: .dada-minimal-table }
-
-### Filter
-
-![td3-hybrid — Filter page](../../../images/tbd-16/td3_hybrid_filter.png){: .screenshot }
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **Cutoff** | Filter cutoff frequency, log-swept 14-bit. |
-| **Reso** | Filter resonance, 14-bit. |
-| **Env** | Filter envelope amount. Same DSP target as `Env Amt` on the all-params macro. |
-| **Type** | Filter topology select (0..3, same four modes as on the all-params macro). |
 {: .dada-minimal-table }
 
 ### Perf
 
-![td3-hybrid — Perf page](../../../images/tbd-16/td3_hybrid_perf.png){: .screenshot }
+![td3-allparams — Perf page](../../../images/tbd-16/td3_all_perf.png){: .screenshot }
 
-The performance / character page. Pick the four live-tweak knobs you'll P-lock per step or twist during a take.
+Filter character + groove — the set-and-forget knobs. Choose your filter, dial drive, decide on slide behaviour, set the amp envelope length. Type and Drive sit next to each other deliberately: Drive only audibly affects Type 0, so when you switch the filter you immediately see the Drive readout flip to `off` if it's no longer doing anything.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Warp** | Oscillator waveshaper amount. Hi-res. |
-| **Drive** | Filter input drive / soft-clip gain. Hi-res. |
-| **Motion** | Combined Tim EG + Col EG modulator routing — one knob to add timbre/color movement under the filter envelope. Hi-res. Replaces the two separate Tim EG / Col EG knobs from the all-params macro. |
-| **Accent** | `OFF`/`ON` accent toggle. P-lock per step. |
+| **Type** | Filter topology — five modes: `PrZB` (Pirkle ZDF + Boost — aggressive, the only one that applies Drive), `Karl` (Karlson — warm), `Blau` (Blaukraut — vintage), `PrkZ` (Pirkle ZDF — clean, no boost), `Zav` (Zavalishin ZDF — modern). Snappy 5-detent encoder. |
+| **Drive** | Filter input drive / soft-clip gain (Pirkle ZDF + Boost only). Reads `off` when Type ≠ `PrZB`. Hi-res. |
+| **Slide** | `OFF`/`ON` — when ON, smooths pitch between consecutive notes (one-pole IIR, ~7 ms time constant). Subtle 303-style glide. P-lock per step for tied-note runs. |
+| **VCA Dec** | Amplitude envelope decay, 0–5 s exponential. Hi-res. |
 {: .dada-minimal-table }
 
 ---
@@ -177,42 +129,17 @@ Gated on `Accent`. When `Accent = OFF` (the factory default for `F Default`), `A
 
 ---
 
-## Accent: binary toggle vs continuous intensity — why the macros differ
+## Accent: trigger flag + intensity dial
 
-Confusing at first glance: the **deep-edit macros** show `Accent` as a binary `OFF` / `ON`, but the **performance macro** shows `Accent` as a continuous 0–100 % knob. Both are correct — they expose two different aspects of the same DSP behaviour.
-
-The TBD03 DSP has **two separate accent-related atomics**, both writable from macros:
+The TBD03 DSP has **two separate accent-related atomics**, exposed as two separate knobs on the Mod page:
 
 | DSP atomic | Type | What it controls |
 |:-----------|:-----|:-----------------|
-| **`accent`** (ctrl 19) | **Binary** in practice — used as a boolean `if (td3_isAccent) { … }` in `RackTBD03::Process`. Any non-zero value = accent ON. | When ON at note-trigger: shortens VCF Decay to a fixed short value (`kAccentDecay`) and multiplies VCA gain by `kAccentVCAFactor`. The classic 303 "extra punch" on accented notes. |
-| **`accent_level`** (ctrl 23) | **Continuous** 0..1 (hi-res 14-bit). | How much extra cutoff modulation depth the accent adds. Higher = sharper, more dramatic accent sweep. |
+| **`accent`** (ctrl 19) — `Accent` knob | **Binary** in practice — used as a boolean `if (td3_isAccent) { … }` in `RackTBD03::Process`. Any non-zero value = accent ON. | When ON at note-trigger: shortens VCF Decay to a fixed short value (`kAccentDecay`) and multiplies VCA gain by `kAccentVCAFactor`. The classic 303 "extra punch" on accented notes. |
+| **`accent_level`** (ctrl 23) — `Acc Lev` knob | **Continuous** 0..1 (hi-res 14-bit). Renders `off` when Accent toggle is off. | How much extra cutoff modulation depth the accent adds. Higher = sharper, more dramatic accent sweep. |
 {: .dada-minimal-table }
 
-In other words: `accent` is the *trigger flag* ("is this note accented?"), `accent_level` is the *intensity dial* ("how strong is the accent boost when it fires?").
-
-**Deep-edit macros (`td3-allparams`, `td3-hybrid`):** expose them as two separate knobs.
-- **`Accent` knob** (`max: 1`, `ui: onoff`) → just the binary trigger flag. P-lock per step for 303-style accent patterns.
-- **`Acc Lev` knob** (`max: 16383`, hi-res NRPN) → just the intensity. Set once for the song, then leave alone.
-
-**Performance macro (`td3-acidbass`):** collapses both into a single hi-res knob.
-- **`Accent` knob** (`max: 16383`, hi-res NRPN, fans out to BOTH ctrl 19 + ctrl 23):
-  - Wire 0 → both atomics = 0 → accent OFF, no boost.
-  - Wire > 0 → ctrl 19 receives the value (becomes truthy → accent ON) AND ctrl 23 receives a proportional value (sets the boost intensity).
-  - **Net effect**: rotating one knob smoothly takes you from "no accent at all" through "subtle accent" up to "full slammed 303 accent" without needing a separate flag-flip. Trade-off: you lose the ability to lock the trigger flag *off* without also zeroing the intensity (rare in practice — if you wanted no accent, you'd just leave the knob at 0).
-
-| Macro | Accent knob behaviour | Acc Lev exposed? |
-|:------|:----------------------|:-----------------|
-| `td3-allparams` | Binary `OFF` / `ON` | Yes — separate `Acc Lev` knob on Mod page |
-| `td3-hybrid` | Binary `OFF` / `ON` | No — `Acc Lev` not on the page; defaults from the preset apply |
-| `td3-acidbass` | Continuous 0–100 % (fan-out) | Implicit — driven by the same Accent knob |
-{: .dada-minimal-table }
-
-**Practical guidance:**
-- If you want classic 303 accent-on-some-steps patterns → use `td3-allparams` or `td3-hybrid`, P-lock the `Accent` toggle to `ON` on the steps you want accented, and dial `Acc Lev` on the song-level sound page.
-- If you want a single live-performance knob that smoothly takes you from "clean" to "fully accented" → use `td3-acidbass`. Twist the Accent knob during a take or P-lock it across steps for a continuous accent ramp.
-
----
+`Accent` is the *trigger flag* ("is this note accented?"); `Acc Lev` is the *intensity dial* ("how strong is the accent boost when it fires?"). For classic 303 accent-on-some-steps patterns: P-lock the `Accent` toggle to `ON` on the steps you want accented, and dial `Acc Lev` once on the song-level sound page.
 
 ---
 
@@ -226,36 +153,12 @@ In other words: `accent` is the *trigger flag* ("is this note accented?"), `acce
 
 ---
 
-## `td3-acidbass` — performance macro (1 page)
-
-![td3-acidbass — Perform page](../../../images/tbd-16/td3_acid_perform.png){: .screenshot }
-
-Single-page 4-knob macro that collapses the 15-knob deep layout down to four "fan-out" controls. Each source knob is hi-res 14-bit NRPN and drives multiple underlying DSP ctrls in parallel — so one twist changes a whole sonic dimension. Good for quick live tweaking and parameter-locked acid lines.
-
-| Knob | Fans out to |
-|:-----|:------------|
-| **Squelch** | Cutoff (log sweep across full range) + Reso (3000 → 13000) + Env Amt (5000 → 15000). The primary 303-character knob — turns the entire filter sweep up together. |
-| **Grit** | Warp (full range) + Drive (0 → 12000). Adds oscillator-side shaping + filter overdrive together. |
-| **Envelope** | VCA Dec + VCF Dec — longer envelopes for sustained parts, shorter for staccato. |
-| **Accent** | Accent toggle (0 = OFF, any value > 0 = ON) + Acc Lev intensity (0 → 12000). At 0, clean sound with full VCF Dec; above 0, accent kicks in proportionally. |
-{: .dada-minimal-table }
-
-The non-modulated params (Shape, Timbre, Color, filter Type) are held at fixed defaults inside the macro (`SAW|SQR`, moderate Timbre, ZDF-Boost filter). Use `td3-allparams` or `td3-hybrid` if you need to vary those.
-
----
-
 ## Factory presets
 
 | Preset | Macro | Character |
 |:-------|:------|:----------|
-| `F Default` | `td3-allparams` | Neutral starting point across the full 15-knob surface. Timbre / Color kept modest so `Tim EG` / `Col EG` have audible headroom. The deep-edit baseline. |
-| `H Bass` | `td3-hybrid` | Punchy SAW + SUB layered acid bass on the 3-page layout. Tight Length/Sweep, mid Cutoff with strong Env, ZDF filter. The "go-to" preset for most acid-bass parts. |
-| `H Squelch` | `td3-hybrid` | Brighter squelchier variant on the same hybrid macro — higher Cutoff, more Reso, more Sweep. Compare against `H Bass` and pick whichever fits the track. |
-| `P Classic` | `td3-acidbass` | Performance preset — moderate Squelch (~67 %), light Grit, mid Envelope, mid Accent. Classic 303 vibe through the 4-knob fan-out macro. Twist live. |
-| `P Dirty` | `td3-acidbass` | Performance preset — high Squelch (~85 %), heavy Grit, short Envelope, strong Accent. Aggressive distorted acid for darker tracks. |
+| `F Default` | `td3-allparams` | Neutral starting point across the full 16-knob surface. Timbre / Color kept modest so `Tim EG` / `Col EG` have audible headroom. The TBD03 baseline; author your own variants on top via the WebUI Preset Manager. |
 {: .dada-minimal-table }
-
-The preset picker name prefix tells you which macro is loaded: `F` = full 4-page deep-edit, `H` = hybrid 3-page, `P` = performance 1-page (4-knob fan-out). You can also author your own preset via the WebUI Preset Manager and save it against any of the three macros.
 
 ---
 
