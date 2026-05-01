@@ -36,6 +36,7 @@ The Model knob picks one of 6 Rings resonator engines. The Easter toggle (Extra 
 | **FM** | FM-voice | Bell / metallic FM timbres |
 | **SymQ** | Sympathetic strings, quantized | Chord-aware sympathetic strings — Chord knob picks the chord type |
 | **S+Rv** | String + reverb | Plucked string with internal reverb tail |
+{: .dada-minimal-table }
 
 ---
 

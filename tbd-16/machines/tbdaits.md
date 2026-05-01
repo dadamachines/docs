@@ -48,6 +48,7 @@ A wrapper-side AHR envelope (Attack / Hold / Release) drives the Plaits LPG so:
 | 9 | Wshp | Waveshaping | 21 | BD   | Bass Drum |
 | 10 | FM2  | FM (2-op) | 22 | SD   | Snare |
 | 11 | Frmt | Granular Formant | 23 | HH   | Hi-Hat |
+{: .dada-minimal-table }
 
 ---
 
