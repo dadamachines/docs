@@ -26,7 +26,7 @@ The TBD-16 wrapper adds a **post-Rings wavefolder** for harmonic grit (velocity-
 
 ## Models
 
-The Model knob picks one of 6 Rings resonator engines. The Easter toggle (Extra page) overrides any selection with **SymQ** (sympathetic-strings quantized) — useful for one-handed switching to chord mode.
+The Model knob picks one of 6 Rings resonator engines. **SymQ** is the chord-aware variant — pick it from the Model knob to enable the Chord knob.
 
 | Label | Engine | Character |
 |---|---|---|
@@ -42,16 +42,16 @@ The Model knob picks one of 6 Rings resonator engines. The Easter toggle (Extra 
 
 ## Parameters
 
-The default TBDings performance macro is organised as **5 pages**, ordered for live performance: voicing controls on page 1, envelope-driven dramatic controls on page 2, supportive controls on later pages. Mirrors the TBDaits layout convention (Voice / Mod / … with Model + engine-aware knob on page 1).
+The default TBDings performance macro is organised as **4 pages**, ordered for live performance: voicing controls on page 1, envelope-driven dramatic controls on page 2, supportive controls on later pages. Mirrors the TBDaits layout convention (Voice / Mod / … with Model + engine-aware knob on page 1).
 
 ### Voice
 
-The 4 main voicing controls. Model + Chord are adjacent because Chord's display is engine-aware (only audible when Model = SymQ or Easter is on).
+The 4 main voicing controls. Model + Chord are adjacent because Chord's display is engine-aware (only audible when Model = SymQ).
 
 | Parameter | What it does |
 |:----------|:-------------|
 | **Model** | Engine selector (6 models — see table above) |
-| **Chord** | Chord type. **Display reads "off" unless Model = SymQ (or Easter on)** — the knob is musically inert in the other 5 models, so the OLED tells the truth. Encoder still turns (you can pre-set the chord for when you switch into a chord-aware mode). 11 chord types: oct, 5, sus4, m, m7, m9, m11, 69, M9, M7, M |
+| **Chord** | Chord type. **Display reads "off" unless Model = SymQ** — the knob is musically inert in the other 5 models, so the OLED tells the truth. Encoder still turns (you can pre-set the chord for when you switch into SymQ mode). 11 chord types: oct, 5, sus4, m, m7, m9, m11, 69, M9, M7, M |
 | **Bright** | Excitation brightness — opens / closes the resonator's tonal centre |
 | **Damp** | Resonator damping — short pluck (CCW) vs sustained ring (CW). The natural decay-time control |
 {: .dada-minimal-table }
@@ -70,7 +70,7 @@ Output-stage modulation drama controls (tremolo / AM with three modes, plus opti
 
 {: .note }
 > **Two engine-aware knobs that say "off" when inert.** TBDings has two controls that the underlying DSP only consults in specific modes:
-> - **Chord** — only audible when **Model = SymQ** (or Easter on). Reads "off" in the other 5 models.
+> - **Chord** — only audible when **Model = SymQ**. Reads "off" in the other 5 models.
 > - **MSnap** — only meaningful when **MType = Poly**. Reads "off" in Trem and PEnv modes.
 >
 > In both cases the encoder still turns (so you can pre-set the value for when you switch into the active mode) — only the visible readout reflects the current functional state. This honest-display pattern means you never wonder "is this knob broken?" — the OLED tells you whenever the knob is currently doing nothing.
@@ -82,9 +82,9 @@ Excitation source + envelope shape — controls how the resonator is driven.
 | Parameter | What it does |
 |:----------|:-------------|
 | **Air** | Continuous noise excitation amount. AIR turns the resonator into a hummed drone at the played pitch — try this for steel-pan or wind-chime textures. The global AIR master CC (channel 13 / CC 67) fans across all enabled TBDings instances |
-| **Pluck** | Pluck CC trigger (rising-edge). Strums the resonator without re-attacking the envelope — useful for repeated plucks at the same envelope state |
-| **VelAmt** | Velocity → wavefolder drive amount. Higher velocity = harder fold = richer harmonics |
-| **EnvSh** | Envelope shape morph — interpolates between 5 named shapes: **Plck** (fastest pluck) → **Soft** (slower decay) → **Snap** (sustained snap) → **Bow** (slow bow) → **Pad** (slowest attack/release) |
+| **Pluck** | Manual extra-strum CC (rising-edge). Fires an additional excitation pulse at the resonator — useful for repeated plucks layered over a held note. Note: every note-on (sequencer step or keyboard) also strums the resonator regardless of this CC's state |
+| **VelAmt** | Velocity → **wavefolder drive** amount (not amplitude). Scales how hard the post-Rings triangle wavefolder distorts the output: 0% = clean, 100% = heavy harmonic fold. Higher per-note velocity at higher VelAmt = louder + crunchier |
+| **EnvSh** | Envelope shape morph — interpolates between 5 named shapes (Plck → Pad). The shape modulates internal **brightness** (and adds a small per-strum pitch bloom); the resonator's own ringing decay (Damp) sets the audible tail length, not EnvSh |
 {: .dada-minimal-table }
 
 ### Reson
@@ -99,13 +99,6 @@ Secondary resonator controls — pitch detune, structural character, polyphony.
 | **Poly** | Internal polyphony: 1v / 2v / 4v. Higher polyphony = more overlap between strums |
 {: .dada-minimal-table }
 
-### Extra
-
-| Parameter | What it does |
-|:----------|:-------------|
-| **Easter** | Engine override — flips the active model to SymQ regardless of the Model knob setting. Use it for one-handed chord-mode switching without losing your Model selection. When Easter is on, the Chord knob's display switches from "off" to live chord names automatically |
-{: .dada-minimal-table }
-
 ---
 
 ## Global AIR master
@@ -115,7 +108,7 @@ Track 13's CC 67 acts as a **TBDings AIR master**: the value fans out to every e
 ---
 
 {: .tip }
-> Set Model = **SymQ** (or flip Easter on), pick a chord with the Chord knob (now 11 snappy detents), and play a single MIDI root note — TBDings voices the full chord on the resonator. Lock Chord per step in the sequencer to step through chord progressions on a held root.
+> Set Model = **SymQ**, pick a chord with the Chord knob (11 snappy detents), and play a single MIDI root note — TBDings voices the full chord on the resonator. Lock Chord per step in the sequencer to step through chord progressions on a held root.
 
 {: .tip }
 > Crank **Air** for drone work — the resonator hums continuously at the played pitch even between sequencer steps. Combine with Damp at the top of its range for sustained pad textures.
@@ -154,7 +147,6 @@ The TBD-16 wrapper adds:
 - Three **modulation modes** (Tremolo / Pitch-Envelope AM / Polyphonic AM with optional harmonic snap)
 - A **continuous AIR excitation** source so the resonator can hum at note pitch between strums
 - A **global AIR master** CC fanning across all TBDings instances for performance-grade single-knob drone control
-- An **Easter toggle** for one-handed switching to chord-aware SymQ mode
 - PSRAM placement-new for `rings::Part` + `rings::Strummer` so the wrapper doesn't blow the PicoSeqRack object size budget
 
 The wrapper's design draws from the Korg phase8-style "single-strum acoustic synthesis" idiom — the project codename internally is "FaseAcht."
