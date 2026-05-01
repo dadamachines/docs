@@ -28,6 +28,12 @@ A wrapper-side AHR envelope (Attack / Hold / Release) drives the Plaits LPG so:
 - **Velocity** scales both amplitude AND DX7 patch-internal timbre routing
 - **Sequencer steps** still re-attack crisply on every trigger
 
+### Stereo voicing
+
+TBDaits is a stereo voice. The **left** channel carries Plaits' main `OUT` signal; the **right** channel carries the engine's `AUX` output — typically a sidekick or by-product of the main signal (a different filter tap, an inverted phase, a noise component, etc.). The mixer's **Pan** knob blends between them: pan hard left isolates `OUT`, pan hard right isolates `AUX`, centre sums both at full level.
+
+Three engines do **not** emit a distinct AUX — DX7A, DX7B and DX7C output the same signal on both channels. For these engines the Pan knob behaves as conventional left/right balance only.
+
 ---
 
 ## Engines (Model knob)
@@ -74,7 +80,7 @@ Envelope-driven dramatic controls — the drop / build knobs. All four fed by Pl
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Decay** | LPG release time (5 ms .. 8 s exponential; drone mode at the very top of the knob holds the envelope indefinitely) |
+| **Decay** | Release time of the wrapper's AHR envelope feeding Plaits' internal LPG (5 ms .. 8 s exponential; drone mode at the very top of the knob holds the envelope indefinitely). The release tail is most audible on engines without strong internal envelopes (East / Phase Distortion / Wavetable / Speech). Percussive and resonator engines (Modal, Particle, Bass Drum, Snare, Hi-Hat) have their own decay shapes baked in — Decay still shapes the LPG, but the engine-internal envelope often dominates the audible tail. |
 | **FMod** | Envelope → frequency modulation depth |
 | **TMod** | Envelope → timbre modulation depth |
 | **MMod** | Envelope → morph modulation depth |
@@ -86,8 +92,8 @@ Supportive output settings — set per voice and rarely touched live.
 
 | Parameter | What it does |
 |:----------|:-------------|
-| **Level** | Voice output gain |
-| **Color** | LPG character: VCF (filter sweep) / Mix (blend) / VCA (amplitude only) |
+| **Level** | Voice-internal output gain — applied post-engine and pre-LPG. This is independent of the **mixer track level** on the Mixer screen: Voice Level shapes how hard the engine drives Plaits' soft-clipper (affecting timbre / saturation feel), Track Level adjusts the per-track contribution to the master bus (affecting the mix only). Use Voice Level for tone, Track Level for balance. |
+| **Color** | LPG character: VCF (filter sweep) / Mix (blend) / VCA (amplitude only). Mostly-audible on the analog / wavetable / granular / modal / additive engines. On DX7A / DX7B / DX7C the engine's internal velocity-to-timbre routing overrides the LPG colour input, so Color has minimal effect on those banks. |
 | **Freq** | Pitch detune (±12 semitones) around the played MIDI note |
 {: .dada-minimal-table }
 
@@ -108,7 +114,9 @@ Supportive output settings — set per voice and rarely touched live.
 
 **With the sequencer**: per-step velocity is honored on every trigger (re-attack snaps the envelope to the new velocity). Lock Harm per-step to browse DX7 patches inside a pattern. Lock Model per-step for radical engine switches mid-bar.
 
-**With an external keyboard**: held keys sustain for as long as you hold them. Velocity drives both amplitude (via wrapper master gain) and DX7 patch-internal timbre routing (via accent). Decay shapes the release tail on key-up.
+**With an external keyboard**: held keys sustain for as long as you physically hold them — the wrapper's AHR envelope tracks key-state directly. Velocity drives both amplitude (via wrapper master gain) and DX7 patch-internal timbre routing (via accent). Decay shapes the release tail on key-up.
+
+**In the sequencer**: each step has a fixed length (Length / Gate setting); at step-end the sequencer emits a NOTE OFF and the wrapper's release phase begins per the Decay knob. Holding a sequencer step longer does not extend the gate beyond its programmed length — for held / drone notes use Decay = drone-mode (knob top) or play live with a keyboard.
 
 ---
 
