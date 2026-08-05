@@ -31,11 +31,19 @@
 {%- if tbd_needs_seq -%}
 <script src="{{ '/assets/js/vendor/webaudio-controls.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/tbd-seq-strings.js?v=r1-edit-reset-8' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/tbd-seq.js?v=r1-practice-3' | relative_url }}" defer id="tbd-seq-js" data-lang="{{ page.lang | default: site.lang | default: 'en' }}"></script>
+<script src="{{ '/assets/js/tbd-seq.js?v=r5-fx-1' | relative_url }}" defer id="tbd-seq-js" data-lang="{{ page.lang | default: site.lang | default: 'en' }}"></script>
 <script src="{{ '/assets/js/tbd-learn-practice.js?v=1' | relative_url }}" defer></script>
 {%- endif -%}
 {%- if tbd_needs_panel -%}
 <link rel="stylesheet" href="{{ '/assets/css/tbd-panel-runtime.css?v=led-2' | relative_url }}">
 <script src="{{ '/assets/js/tbd16-panel.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/tbd-panel.js?v=r1-practice-3' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/tbd-panel.js?v=r2-f1-controls-1' | relative_url }}" defer></script>
+{%- endif -%}
+{%- comment -%}
+  The playground's pattern picker. Deferred like the rest: it only calls public
+  methods on an already-upgraded <tbd-seq>, and the grid stays usable by hand
+  if it never arrives.
+{%- endcomment -%}
+{%- if page.tbd_playground or page.content contains "tbd-playground.html" -%}
+<script src="{{ '/assets/js/tbd-playground.js?v=2' | relative_url }}" defer></script>
 {%- endif -%}

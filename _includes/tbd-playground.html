@@ -1,0 +1,64 @@
+{%- comment -%}
+  Include as: {% include tbd-playground.html %}
+
+  The Learn playground: the virtual device on top, a genre/pattern picker under
+  it, and an editable grid that drives both.
+
+  Parameters (all optional)
+    id            base id; the sequencer becomes "<id>-seq"  (default: playground)
+    tracks        comma list of voice rows, in order
+    panel_tracks  product-track-to-voice map for the runtime
+    steps         16 / 32 / 64                               (default: 16)
+    bpm           starting tempo                             (default: 120)
+    pattern       starting pattern in the data-pattern spec
+    caption       caption under the panel
+
+  This mounts the same GrooveBox runtime the lessons use, so track navigation,
+  the OLED and the step LEDs are the product's own output rather than a docs
+  drawing. Rows beyond the runtime-mapped ones still play in the browser, so a
+  preset that uses more voices than the device exposes is still audible.
+
+  The sequencer deliberately gets no `length`/`pages` controls: the runtime ABI
+  has no input for pattern length or step page, so a 2- or 4-bar grid would
+  play past what the device can show and the two would silently disagree. One
+  bar of sixteen keeps them identical.
+{%- endcomment -%}
+
+{%- assign pg_id = include.id | default: 'playground' -%}
+{%- assign pg_seq = pg_id | append: '-seq' -%}
+
+{%- comment -%}
+  The picker sits above the device on purpose: choosing a groove is the first
+  thing you do, and the device below it is what the choice acts on.
+{%- endcomment -%}
+<div class="tbd-playground" id="{{ pg_id }}" data-target="{{ pg_seq }}">
+  <noscript>
+    <p class="tbd-playground__blurb">The pattern picker needs JavaScript. The grid below still shows the starting pattern.</p>
+  </noscript>
+</div>
+
+{% include tbd-panel.html
+   runtime="groovebox-dev"
+   follow=pg_seq
+   oled="sound_page0"
+   caption=include.caption %}
+
+{% include tbd-seq.html
+   id=pg_seq
+   label=include.label
+   tracks=include.tracks
+   panel_tracks=include.panel_tracks
+   pattern=include.pattern
+   steps=include.steps
+   bpm=include.bpm
+   controls="play,bpm,swing,reset"
+   edit="true"
+   generic_names="true"
+   keep_playing="true" %}
+
+{%- comment -%}
+  What the selected groove is and why it works. It lives below the instrument
+  rather than between the picker and the device, so nothing pushes the device
+  down the page while you are choosing.
+{%- endcomment -%}
+<div class="tbd-playground__info" id="{{ pg_id }}-info"></div>

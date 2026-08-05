@@ -4,10 +4,10 @@
   "files": {
     "canvas-adapter.js": "90b9ed562a42151df0459d6a7ccba0ae41b3f57890c72b57a382413abcff56ab",
     "clock-drivers.js": "17fc3a22879e462b8f4db38e49960b6642e812ed8fb32466a9786dd1bd662bba",
-    "contract-validator.js": "2bfb103ce2e338b15f73fb1f10b4eba9882db11340726e0e0affe859906e7827",
+    "contract-validator.js": "79afcb649f1c15575130e39dd41faab9697812e99fb65b16af0ff15d630da25a",
     "framebuffer-normalizer.js": "7ff019c8e8ce0adfbec466f8648d33bc53a28f983d616650ca9ccc890b21e85c",
     "package-loader.js": "0911f1f72718c7787073d3bf03f4be4fa9970287c57c4a18990ae81046d487ea",
-    "runtime-controller.js": "40cd8289dea6289843ee064eda4382e6ae4621272992bb32c0fc33cdea8307be",
+    "runtime-controller.js": "7727209aa26da1e6ddd99b0cd8f6b54570a9865ccecdabae652e300226183481",
     "runtime-lifecycle.js": "40cec92d6a80daaad48e9172d3a32b9d31509380ba2814f114d0e1ed0a929635",
     "runtime-worker.js": "51da15f5ea80bac7420642c26ac9a0ed50e0f301a95adb2bcd1e71d37c828c00",
     "semantic-input-adapter.js": "7923f2ee9bf26d40dc5dd1ec88eec4ee9f0079171dc3554db8b53b1d095571f6",

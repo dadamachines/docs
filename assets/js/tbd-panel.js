@@ -198,7 +198,12 @@
     var self = this;
     this.controls = {};
     L.buttons.forEach(function (b) {
-      var runtimeControl = self.dataset.runtimeModule && ['play', 'func2', 'left', 'right'].indexOf(b.id) !== -1;
+      // Every control the runtime binds, not a subset. Anything omitted here
+      // still receives pointer events as a <span>, but is invisible to the
+      // keyboard and announces nothing — so it looks like a dead button to
+      // anyone not using a mouse.
+      var RUNTIME_CONTROLS = ['play', 'func1', 'func2', 'func5', 'left', 'right', 'up', 'down'];
+      var runtimeControl = self.dataset.runtimeModule && RUNTIME_CONTROLS.indexOf(b.id) !== -1;
       var canControl = self.interactive && (b.id === 'play' || runtimeControl);
       var n = el(canControl ? 'button' : 'span', 'tbd-panel__btn');
       if (canControl) {
