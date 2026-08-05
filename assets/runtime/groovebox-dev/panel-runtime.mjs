@@ -5,8 +5,8 @@ import { CanvasSurfaceAdapter } from '../tbd-wasm-sdk/canvas-adapter.js';
 import { RuntimeLifecycle } from '../tbd-wasm-sdk/runtime-lifecycle.js';
 import { SemanticInputAdapter } from '../tbd-wasm-sdk/semantic-input-adapter.js';
 
-const workerUrl = new URL('./development-runtime-worker.mjs?v=r4-master-1', import.meta.url);
-const moduleUrl = new URL('./groovebox-runtime.mjs?v=r4-master-1', import.meta.url);
+const workerUrl = new URL('./development-runtime-worker.mjs?v=r13-f1-bind-fix-1', import.meta.url);
+const moduleUrl = new URL('./groovebox-runtime.mjs?v=r13-f1-bind-fix-1', import.meta.url);
 
 function rgbCss(rgb) { return `#${(rgb >>> 0).toString(16).padStart(6, '0').slice(-6)}`; }
 
@@ -107,6 +107,11 @@ export async function mount(panel) {
         ];
         value = Number(globalValues[index]);
         scaledValue = value / 127 * 100;
+      } else if (screenId === 'track.mixer') {
+        // TR.MIX publishes the track's own strip. Let the knobs follow it, and
+        // project level and pan into that track's browser voice below, so the
+        // fader does something audible rather than only moving on screen.
+        scaledValue = value / 127 * 100;
       } else if (screenId !== 'sound.parameters') {
         continue;
       }
@@ -127,6 +132,17 @@ export async function mount(panel) {
       if (screenId === 'sound.parameters' && seq && typeof seq.setPanelKnob === 'function') {
         seq.setPanelKnob(index, scaledValue, activeTrack, parameterPage);
       }
+    }
+    // The strip is one thing, so apply it in one call after the loop rather
+    // than four times as separate knobs.
+    if (screenId === 'track.mixer' && seq && typeof seq.setPanelMixer === 'function') {
+      seq.setPanelMixer(
+        activeTrack,
+        Number(snapshot.observables['parameter.encoder.1']),   // LEVEL
+        Number(snapshot.observables['parameter.encoder.2']),   // PAN
+        Number(snapshot.observables['parameter.encoder.3']),   // FX1 delay send
+        Number(snapshot.observables['parameter.encoder.4'])    // FX2 reverb send
+      );
     }
     if (screenId === 'tempo' && Number.isFinite(tempo) && tempo !== lastAudioTempo) {
       const seq = panel._followEl;
@@ -230,6 +246,17 @@ export async function mount(panel) {
       const unbind = [];
       panel.stepBtns.forEach((button, index) => unbind.push(input.bindButton(button, `step.${index + 1}`)));
       unbind.push(input.bindButton(panel.controls.play, 'transport.play'));
+      // F1 opens the Project menu and closes it again.
+      //
+      // Bound like every other control. An earlier attempt gated this on
+      // client.descriptor, which only DirectWasmRuntime has — the Worker
+      // client does not, so the condition was always false and F1 silently
+      // did nothing. A press against an artifact without the endpoint is
+      // reported through onError, which is the same path every other binding
+      // already relies on.
+      if (panel.controls.func1) {
+        unbind.push(input.bindButton(panel.controls.func1, 'function.1'));
+      }
       unbind.push(input.bindButton(panel.controls.func2, 'function.2'));
       unbind.push(input.bindButton(panel.controls.func5, 'function.5'));
       unbind.push(input.bindButton(panel.controls.left, 'navigation.left'));
@@ -255,13 +282,54 @@ export async function mount(panel) {
     }
   });
 
-  const enabledTracks = String(panel._followEl?.dataset.panelTracks || '')
+  const panelTrackEntries = String(panel._followEl?.dataset.panelTracks || '')
     .split(',')
-    .map(entry => Number(entry.split(':')[0]))
-    .filter(track => Number.isInteger(track) && track >= 1 && track <= 16);
+    .map(entry => {
+      const [track, voice] = entry.split(':');
+      return { track: Number(track), voice: (voice || '').trim() };
+    })
+    .filter(entry => Number.isInteger(entry.track) && entry.track >= 1 && entry.track <= 16);
+  const enabledTracks = panelTrackEntries.map(entry => entry.track);
+
+  // Which product machine backs each teaching voice. This binding is the docs
+  // site's to make: the runtime contract carries neutral machine ids precisely
+  // so a consumer can choose, and the product never learns about lesson voices.
+  const VOICE_MACHINES = {
+    kick: 'synth-kick', kick2: 'fm-kick', snare: 'digital-snare',
+    clap: 'clap', rim: 'rimshot', hhc: 'hat-closed', hho: 'hat-open',
+    ride: 'hat-open', cow: 'rimshot', tom: 'analog-snare', shk: 'hat-closed'
+  };
+
+  // Opt-in per page. Lessons deliberately do NOT set this: their text names the
+  // real machines ("boots with Synth Kick20"), so renaming their tracks would
+  // make the prose disagree with the screen. Sending no `tracks` key leaves
+  // boot state byte-identical to before this existed.
+  const wantsGenericNames = panel._followEl?.dataset.panelGenericNames === 'true';
+  const seq = panel._followEl;
+  if (wantsGenericNames && typeof seq?.getTrackLabel !== 'function' && window.console) {
+    console.warn('TBD panel: <tbd-seq> has no getTrackLabel(); device tracks keep their factory names. Usually a stale cached tbd-seq.js — hard-reload.');
+  }
+  const tracks = wantsGenericNames
+    ? panelTrackEntries
+        .filter(entry => VOICE_MACHINES[entry.voice])
+        .map(entry => ({
+          index: entry.track,
+          machine: VOICE_MACHINES[entry.voice],
+          // Taken from the grid row itself, so the screen and the row can
+          // never drift apart, and both follow the page's language.
+          // No silent fallback to the raw voice id: that used to put "hhc" on
+          // the device while the grid row said "Closed hat", which reads as a
+          // bug in the device rather than a stale script. Omitting the name
+          // keeps the factory one and the warning says why.
+          name: typeof seq.getTrackLabel === 'function' ? seq.getTrackLabel(entry.voice) : undefined
+        }))
+    : null;
+
   await lifecycle.activate({
     moduleUrl: moduleUrl.href,
-    configuration: { fixtureId: 'sound-boot', enabledTracks },
+    configuration: tracks && tracks.length
+      ? { fixtureId: 'sound-boot', enabledTracks, tracks }
+      : { fixtureId: 'sound-boot', enabledTracks },
     seed: 1
   });
 

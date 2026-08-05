@@ -1,5 +1,5 @@
 import { normalizeLuma } from './framebuffer-normalizer.js';
-import { validateDescriptor } from './contract-validator.js';
+import { validateDescriptor, validateFixtureConfiguration } from './contract-validator.js';
 
 export const ABI_V0 = 0x00000001;
 
@@ -58,7 +58,10 @@ export class DirectWasmRuntime {
     this.descriptor = validateDescriptor(descriptor);
     this.inputEndpoints = new Map(this.descriptor.inputs.map(input => [input.id, input.endpoint]));
     this.maxAdvanceUs = this.descriptor.maxAdvanceUs;
-    const configBytes = new TextEncoder().encode(JSON.stringify(configuration));
+    // Validate before the bytes cross the ABI. A malformed configuration would
+    // otherwise be silently ignored by the runtime and show up much later as a
+    // track that is mysteriously missing or unnamed.
+    const configBytes = new TextEncoder().encode(JSON.stringify(validateFixtureConfiguration(configuration)));
     const ptr = configBytes.length ? this.module._malloc(configBytes.length) : 0;
     try {
       if (configBytes.length) this.module.HEAPU8.set(configBytes, ptr);

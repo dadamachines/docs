@@ -1,0 +1,118 @@
+// ---------------------------------------------------------------------------
+// Learn playground: the genre / pattern picker that sits between the virtual
+// panel and its grid.
+//
+// Deliberately borrows the surrounding widget's surface treatment rather than
+// introducing a third visual language on the page — the panel and the grid
+// already carry the look.
+// ---------------------------------------------------------------------------
+
+.tbd-playground {
+  margin: 0 0 1.25rem;
+}
+
+.tbd-playground__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: flex-end;
+}
+
+.tbd-playground__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.tbd-playground__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $grey-dk-000;
+}
+
+.tbd-playground__select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: $body-text-color;
+  background-color: $body-background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+}
+
+.tbd-playground__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tbd-playground__btn {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: $body-text-color;
+  cursor: pointer;
+  background-color: $body-background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+
+  &:hover {
+    border-color: $link-color;
+    color: $link-color;
+  }
+
+  // A visible focus ring matters more here than usual: these buttons rewrite
+  // the whole grid, so keyboard users need to know exactly where they are.
+  &:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 2px;
+  }
+}
+
+.tbd-playground__btn--primary {
+  color: #fff;
+  background-color: $link-color;
+  border-color: $link-color;
+
+  &:hover {
+    color: #fff;
+    filter: brightness(1.08);
+  }
+}
+
+.tbd-playground__blurb {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  border-left: $border-radius solid $link-color;
+  border-radius: 0 $border-radius $border-radius 0;
+  background-color: rgba($link-color, 0.06);
+}
+
+.tbd-playground__tip {
+  display: block;
+  margin-top: 0.35rem;
+  color: $grey-dk-100;
+}
+
+@media (max-width: 40rem) {
+  .tbd-playground__field {
+    flex-basis: 100%;
+  }
+
+  .tbd-playground__actions {
+    flex: 1 1 100%;
+  }
+
+  .tbd-playground__btn {
+    flex: 1 1 auto;
+  }
+}

@@ -111,6 +111,103 @@
       return s;
     },
 
+    // One persistent gain -> panner per voice, so the device's TR.MIX level and
+    // pan have something to act on. Built lazily and kept for the page's life:
+    // a per-hit node cannot hold state between hits.
+    chains: {},
+    fx: null,
+
+    // A decaying noise burst is a serviceable reverb impulse and costs nothing
+    // to ship — far better than loading an impulse-response file for a widget
+    // whose job is to teach what a send does.
+    impulse: function (seconds, decay) {
+      var rate = this.ctx.sampleRate;
+      var length = Math.max(1, Math.floor(rate * seconds));
+      var buffer = this.ctx.createBuffer(2, length, rate);
+      for (var c = 0; c < 2; c++) {
+        var data = buffer.getChannelData(c);
+        for (var i = 0; i < length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+        }
+      }
+      return buffer;
+    },
+
+    // FX1 delay and FX2 reverb, one shared pair for the whole page, matching
+    // the device: tracks send to two global effects rather than each carrying
+    // its own. Built on first use so a page that never opens TR.MIX pays
+    // nothing.
+    ensureFx: function () {
+      if (this.fx || !this.ctx) return this.fx;
+      var ctx = this.ctx;
+
+      var delay = ctx.createDelay(2);
+      delay.delayTime.value = 0.3;
+      var feedback = ctx.createGain();
+      feedback.gain.value = 0.34;
+      // Damping in the feedback path: undamped repeats pile up into noise and
+      // stop sounding like an effect you can learn from.
+      var damping = ctx.createBiquadFilter();
+      damping.type = 'lowpass';
+      damping.frequency.value = 3200;
+      delay.connect(damping);
+      damping.connect(feedback);
+      feedback.connect(delay);
+      delay.connect(this.master);
+
+      var reverb = ctx.createConvolver();
+      reverb.buffer = this.impulse(1.9, 2.6);
+      reverb.connect(this.master);
+
+      this.fx = { delay: delay, reverb: reverb };
+      return this.fx;
+    },
+
+    // Dotted eighth: the delay setting that makes a send sound intentional
+    // rather than like a mistake, and it has to follow tempo to stay that way.
+    setFxTempo: function (bpm) {
+      if (!this.fx || !this.ctx || !bpm) return;
+      var time = Math.min(2, (60 / bpm) * 0.75);
+      this.fx.delay.delayTime.setTargetAtTime(time, this.ctx.currentTime, 0.05);
+    },
+
+    trackChain: function (id) {
+      if (!this.ctx) return null;
+      var chain = this.chains[id];
+      if (!chain) {
+        var gain = this.ctx.createGain();
+        gain.gain.value = 1;
+        var panner = this.ctx.createStereoPanner ? this.ctx.createStereoPanner() : null;
+        if (panner) {
+          gain.connect(panner);
+          panner.connect(this.master);
+        } else {
+          // Safari without StereoPanner still gets level; pan is a no-op
+          // rather than a broken graph.
+          gain.connect(this.master);
+        }
+
+        // Post-fader sends, as on the device: pulling the fader down takes the
+        // effect with it, instead of leaving a track audible through its own
+        // reverb after you muted it.
+        var tail = panner || gain;
+        var fx = this.ensureFx();
+        var send1 = this.ctx.createGain();
+        var send2 = this.ctx.createGain();
+        send1.gain.value = 0;
+        send2.gain.value = 0;
+        tail.connect(send1);
+        tail.connect(send2);
+        send1.connect(fx.delay);
+        send2.connect(fx.reverb);
+
+        chain = this.chains[id] = {
+          gain: gain, panner: panner, send1: send1, send2: send2
+        };
+      }
+      return chain;
+    },
+
     // Preserve the production fader's quadratic response while calibrating
     // its default wire value (91, about +6 dB on the device) to the browser
     // player's established 0.8 headroom. The runtime remains the authority.
@@ -647,6 +744,10 @@
   // A widget that has scrolled away should not still be making noise.
   proto.observeVisibility = function () {
     if (!('IntersectionObserver' in window)) return;
+    // An instrument the learner deliberately started keeps playing while they
+    // scroll — reading the text below it is part of using it. A lesson widget
+    // still stops, because there the sound belongs to the passage on screen.
+    if (this.dataset.keepPlaying === 'true') return;
     var self = this;
     this._io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -1158,6 +1259,96 @@
     return Audio.setMasterVolume(value, muted);
   };
 
+  // Project the device's TR.MIX strip onto the browser voice for that track.
+  // Values arrive in the firmware's own 0-127 range; 64 is centre for pan,
+  // and 100 is unity for level so the fader has headroom above nominal like
+  // the device's does.
+  proto.setPanelMixer = function (productTrack, level, pan, fx1, fx2) {
+    var id = this.getPanelTrackId(productTrack);
+    if (!id || !Audio.ctx) return false;
+    var chain = Audio.trackChain(id);
+    if (!chain) return false;
+    var now = Audio.ctx.currentTime;
+
+    if (Number.isFinite(level)) {
+      var normalized = Math.max(0, Math.min(127, level)) / 100;
+      // Quadratic, matching the master fader's response, so a move near the
+      // bottom of the range does what the ear expects.
+      chain.gain.gain.setTargetAtTime(normalized * normalized, now, 0.02);
+    }
+    if (chain.panner && Number.isFinite(pan)) {
+      chain.panner.pan.setTargetAtTime(
+        Math.max(-1, Math.min(1, (pan - 64) / 63)), now, 0.02);
+    }
+
+    // Sends are quadratic too, and top out below unity: a fully open send that
+    // drowns the dry signal teaches the wrong lesson about what a send is.
+    function send(node, value) {
+      if (!node || !Number.isFinite(value)) return;
+      var amount = Math.max(0, Math.min(127, value)) / 127;
+      node.gain.setTargetAtTime(amount * amount * 0.9, now, 0.02);
+    }
+    send(chain.send1, fx1);
+    send(chain.send2, fx2);
+
+    Audio.setFxTempo(this.bpm);
+    return true;
+  };
+
+  // The display name of a voice row, in the page's language. A linked runtime
+  // uses this so the device screen and the grid row agree on what a track is
+  // called instead of maintaining a second list that can drift.
+  proto.getTrackLabel = function (id) {
+    return tIn('tracks', id);
+  };
+
+  // Move a slider and its readout together. Used when something other than the
+  // learner's own drag changes a value, so the control never lies about state.
+  proto.setSliderValue = function (name, value, unitKey) {
+    var input = this.controlInputs && this.controlInputs[name];
+    var out = this.controlOutputs && this.controlOutputs[name];
+    var label = fmt(t(unitKey), value);
+    if (input) {
+      input.value = String(value);
+      input.setAttribute('aria-valuetext', label);
+    }
+    if (out) out.textContent = label;
+  };
+
+  // Load a whole multi-track pattern at once, in the same `data-pattern` spec
+  // authors already use ("kick:1,5,9,13|snare:5,13"). Tracks absent from the
+  // spec are cleared rather than left behind, so a preset is what you hear and
+  // nothing survives from the previous one.
+  //
+  // Deliberately additive: nothing calls this unless a page opts in, so every
+  // existing lesson behaves exactly as before.
+  proto.applyPreset = function (spec, opts) {
+    opts = opts || {};
+    var parsed = parsePattern(spec, this.steps);
+    var self = this;
+
+    this.audioTrackIds.forEach(function (id) {
+      var row = new Uint8Array(self.steps);
+      if (parsed[id]) row.set(parsed[id].subarray(0, self.steps));
+      self.grid[id] = row;
+    });
+
+    if (opts.bpm) {
+      this.bpm = Math.max(30, Math.min(300, Math.round(opts.bpm)));
+      this.setSliderValue('bpm', this.bpm, 'bpmUnit');
+    }
+    if (opts.swing !== undefined) {
+      this.swing = Math.max(0, Math.min(60, Math.round(opts.swing)));
+      this.setSliderValue('swing', this.swing, 'percentUnit');
+    }
+
+    this.refreshSteps();
+    // One batch, not eight per-track events: see emitPatternBatch. Emitting
+    // per track would walk a linked device onto the last track in the map.
+    this.emitPatternBatch(this.viewPage);
+    if (opts.announce) this.announce(opts.announce);
+  };
+
   proto.paintStep = function (id, col) {
     var i = this.viewPage * 16 + col;
     var b = this.cells[id][col];
@@ -1186,11 +1377,29 @@
     btn.classList.toggle('is-muted', this.muted[id]);
   };
 
+  // Publish a whole-grid change as ONE batch instead of a per-track stream.
+  //
+  // The per-track path makes a linked runtime select each track in turn and
+  // leaves it on the last one — so rewriting eight tracks parks the device on
+  // track 8 instead of wherever the learner was. The batch channel applies
+  // every track and then restores the original selection.
+  proto.emitPatternBatch = function (page) {
+    page = page === undefined ? this.viewPage : page;
+    var patterns = this.getPanelPatterns(page);
+    if (!patterns.length) {
+      this.emitPatternChange(page);
+      return;
+    }
+    this.dispatchEvent(new CustomEvent('tbd-seq:reset-pattern', {
+      detail: { page: page, patterns: patterns }
+    }));
+  };
+
   proto.clearGrid = function () {
     var self = this;
     this.trackIds.forEach(function (id) { self.grid[id].fill(STEP_OFF); });
     this.refreshSteps();
-    this.emitAllPatternChanges(this.viewPage);
+    this.emitPatternBatch(this.viewPage);
   };
 
   proto.randomise = function () {
@@ -1204,7 +1413,7 @@
       }
     });
     this.refreshSteps();
-    this.emitAllPatternChanges(this.viewPage);
+    this.emitPatternBatch(this.viewPage);
   };
 
   proto.resetPattern = function () {
@@ -1369,7 +1578,10 @@
       var v = self.grid[id][step];
       var out = ctx.createGain();
       out.gain.value = 1;
-      out.connect(Audio.master);
+      // Through the track's own strip, not straight to master, so TR.MIX level
+      // and pan apply to everything that track plays.
+      var chain = Audio.trackChain(id);
+      out.connect(chain ? chain.gain : Audio.master);
       VOICES[id].play(ctx, when, out, self.knobValues[id], VELOCITY[v] || 1);
     });
   };

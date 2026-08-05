@@ -72,6 +72,49 @@ export function validateDescriptor(value) {
   return descriptor;
 }
 
+/**
+ * Enforces the fixture-configuration rules JSON Schema cannot express:
+ * uniqueness, and agreement between `tracks` and `enabledTracks`.
+ *
+ * Unknown keys pass through untouched. A host may ask for more than a given
+ * artifact implements — an older runtime simply ignores what it does not know,
+ * which is what lets one consumer target several artifact versions.
+ *
+ * Returns the configuration so callers can validate inline at the call site.
+ */
+export function validateFixtureConfiguration(value) {
+  const configuration = object(value ?? {}, 'configuration');
+
+  let enabled = null;
+  if (configuration.enabledTracks !== undefined) {
+    if (!Array.isArray(configuration.enabledTracks) || configuration.enabledTracks.length === 0) fail('enabledTracks must be a non-empty array');
+    configuration.enabledTracks.forEach((track, index) => integer(track, `enabledTracks[${index}]`, 1, 16));
+    unique(configuration.enabledTracks, 'enabledTracks');
+    enabled = new Set(configuration.enabledTracks);
+  }
+
+  if (configuration.tracks !== undefined) {
+    if (!Array.isArray(configuration.tracks) || configuration.tracks.length === 0) fail('tracks must be a non-empty array');
+    const indexes = [];
+    for (const track of configuration.tracks) {
+      object(track, 'track');
+      integer(track.index, 'track.index', 1, 16);
+      if (track.machine !== undefined) string(track.machine, `track ${track.index} machine`, /^[a-z][a-z0-9-]*$/);
+      if (track.name !== undefined) {
+        string(track.name, `track ${track.index} name`);
+        if (track.name.length > 16) fail(`track ${track.index} name exceeds 16 characters`);
+      }
+      // Configuring a track the instance will not expose is a host bug worth
+      // surfacing: the setup silently would not appear anywhere.
+      if (enabled && !enabled.has(track.index)) fail(`track ${track.index} is configured but not in enabledTracks`);
+      indexes.push(track.index);
+    }
+    unique(indexes, 'track indexes');
+  }
+
+  return configuration;
+}
+
 function validateArtifact(artifact, role) {
   object(artifact, `artifacts.${role}`);
   const path = string(artifact.path, `artifacts.${role}.path`);
