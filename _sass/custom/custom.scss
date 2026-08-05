@@ -449,3 +449,35 @@ hr + .origin-card,
     color: #5a4208;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Callouts: restore the filled tint from just-the-docs 0.10.1.
+//
+// 0.12.0 swapped the translucent background for a 1px outline and removed the
+// `callouts_opacity` option, so there is no config knob for this any more.
+//
+// This map duplicates the `callouts:` colours in _config.yml. Adding a callout
+// there without adding it here just leaves it with the theme's outlined style
+// — degraded, not broken.
+// ---------------------------------------------------------------------------
+$dada-callout-colors: (
+  "highlight": $yellow-000,
+  "important": $blue-000,
+  "new":       $green-000,
+  "note":      $purple-000,
+  "tip":       $green-000,
+  "warning":   $red-000,
+);
+
+@each $name, $color in $dada-callout-colors {
+  p.#{$name},
+  blockquote.#{$name} {
+    background: rgba($color, 0.2);
+    border: 0;
+    border-left: $border-radius solid $color;
+
+    &::before {
+      color: $color;
+    }
+  }
+}
