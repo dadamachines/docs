@@ -26,9 +26,11 @@ exclude:
   - tbd-16/learn/WASM-PLAYHEAD-HANDOVER.md
   - assets/runtime/groovebox-dev/README.md
   - assets/runtime/tbd-wasm-sdk/README.md
-  # Third-party attribution note. Has no front matter, so Jekyll would
-  # otherwise copy it verbatim to a public URL rather than render it.
+  # Repo-level notes with no front matter. Jekyll would otherwise copy these
+  # verbatim to a public URL rather than render them as pages.
   - assets/js/vendor/README.md
+  - CLAUDE.md
+  - AGENTS.md
   # Node-only test harnesses; nothing in the browser imports these.
   - assets/runtime/groovebox-dev/smoke-test.mjs
   - assets/runtime/tbd-wasm-sdk/trace-runner.js

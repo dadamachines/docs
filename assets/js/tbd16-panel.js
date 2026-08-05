@@ -2,19 +2,17 @@
  * TBD-16 front-panel layout for the Learn lessons.
  *
  * SOURCE OF TRUTH FOR GEOMETRY
- *   tbd-studio → projects/prototype-workflow-demo.tbd-project.json
- *   → panels[0] (`panel-tbd16-prototype`, 110 × 110 mm, corner radius 0.5)
- *   Positions below are copied verbatim from that file's component
+ *   The hardware design source: a 110 × 110 mm panel with corner radius 0.5.
+ *   Positions below are copied verbatim from that source's component
  *   `position` values, in millimetres, origin top-left, Y down.
  *
- * CONTROL-SURFACE VERSION
- *   The Studio prototype adapts its legacy source artboard to the Rev C
- *   control surface: FUNC1/FUNC2 sit beside the OLED, SHIFT/HYPER occupy the
- *   centre pair, and FUNC3–FUNC6 form the right-hand 2 × 2 block. The two
- *   visible FUNC status LEDs are included along with the 16 step LEDs.
+ * CONTROL SURFACE
+ *   FUNC1/FUNC2 sit beside the OLED, SHIFT/HYPER occupy the centre pair, and
+ *   FUNC3–FUNC6 form the right-hand 2 × 2 block. The two visible FUNC status
+ *   LEDs are included along with the 16 step LEDs.
  */
 window.TbdPanelLayout = {
-  source: 'tbd-studio/projects/prototype-workflow-demo.tbd-project.json',
+  source: 'hardware design source (panel geometry, millimetres)',
   width: 110,
   height: 110,
   cornerRadius: 0.5,

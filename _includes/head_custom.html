@@ -9,8 +9,8 @@
   fallback catches a page whose author forgot the flag.
 
   webaudio-controls.js is deliberately NOT deferred: it must define its custom
-  elements before tbd-seq.js instantiates any knob. tbd-studio's index.html and
-  the WebUI's build-webui.sh observe the same ordering constraint.
+  elements before tbd-seq.js instantiates any knob. The device's own WebUI
+  observes the same ordering constraint.
 
   Every URL goes through `relative_url` so the site keeps working when GitHub
   Actions builds it with a non-empty --baseurl.

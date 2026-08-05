@@ -6,13 +6,13 @@
  * the same thing as lit step buttons on the device, next to the OLED screen you
  * should be looking at.
  *
- * Geometry comes from tbd16-panel.js, which is copied from the tbd-studio
- * project file. Rendering is deliberately a separate, much smaller
- * implementation rather than a copy of tbd-studio's simulator-panel.js:
- * that module carries eight hardcoded singleton element ids (so only one panel
- * could exist per page), needs six stubbed globals, is LGPL-3.0, and currently
- * lives on a branch being refactored. Sharing the *data* keeps the panels
- * honest without coupling a documentation site to an application's internals.
+ * Geometry comes from tbd16-panel.js, which is copied from the hardware
+ * design source. Rendering is deliberately a separate, much smaller
+ * implementation rather than a copy of the existing simulator panel: that
+ * module carries hardcoded singleton element ids (so only one panel could
+ * exist per page) and needs several stubbed globals. Sharing the *data* keeps
+ * the panels honest without coupling a documentation site to an application's
+ * internals.
  *
  * Attributes
  *   data-steps      "1,5,9,13"  — step buttons to show lit

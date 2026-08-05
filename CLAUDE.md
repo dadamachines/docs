@@ -37,9 +37,16 @@ verbatim to a public URL rather than rendered as a page. Watch for those.
 
 ```sh
 bundle exec jekyll build
-grep -rlIi "/Users/\|private/tmp\|<internal repo names>" _site/   # expect no hits
-git grep --cached -lIi "/Users/\|private/tmp"                     # expect no hits
+grep -rlIi "/Users/\|private/tmp" _site/        # local paths — expect no hits
+git grep --cached -lIi "/Users/\|private/tmp"   # same, in the commit
 ```
+
+Also grep for the names of internal repositories, design tools, project files
+and unreleased hardware revisions. **Code comments are the usual culprit** —
+a provenance note explaining where some geometry or constant came from will
+happily name an internal tool and its project file. Describe the *source*
+generically instead. Check against what is already live: if a name does not
+appear anywhere in `origin/main`, committing it is a new disclosure.
 
 Then read `git diff --cached --stat` in full and confirm every single file is
 something you are content to see on the public internet.
