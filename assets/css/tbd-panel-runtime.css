@@ -1,0 +1,37 @@
+/*
+ * Critical runtime LED presentation for <tbd-panel>.
+ *
+ * This intentionally lives outside the compiled theme stylesheet. During
+ * local lesson development the theme CSS can remain cached while a running
+ * Jekyll server rebuilds it, leaving live firmware LEDs with their very dim
+ * raw palette colour. The versioned link in head_custom.html makes the
+ * semantic lit/playhead states update independently.
+ */
+
+.tbd-panel__led.is-runtime-led.is-lit {
+  background: radial-gradient(
+    circle at 42% 35%,
+    #fff 0 18%,
+    #d8ffd2 19% 38%,
+    #55ff70 55%,
+    #00a62d 100%
+  ) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 90, 24, 0.5),
+    0 0 150% 55% rgba(170, 255, 174, 0.95),
+    0 0 360% 120% rgba(40, 255, 78, 0.85) !important;
+}
+
+.tbd-panel__led.is-runtime-led.is-playhead {
+  background: radial-gradient(
+    circle at 42% 35%,
+    #fff 0 18%,
+    #fff4bd 19% 38%,
+    #ffd23c 58%,
+    #d68b00 100%
+  ) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.82),
+    0 0 180% 65% rgba(255, 244, 189, 0.98),
+    0 0 390% 130% rgba(255, 210, 60, 0.92) !important;
+}

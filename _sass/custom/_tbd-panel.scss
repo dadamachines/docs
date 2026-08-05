@@ -1,0 +1,410 @@
+// ---------------------------------------------------------------------------
+// <tbd-panel> — the TBD-16 front panel, rendered in the docs.
+//
+// Everything is positioned in percentages derived from the 110 × 110 mm panel,
+// so the whole thing scales cleanly from a phone to a wide screen without a
+// single fixed dimension. Cap legends scale with the panel via cqw units.
+//
+// The visual target is the hi-fi hardware simulator: brushed aluminium
+// front plate, black plastic caps with light legends, a recessed OLED behind
+// glass. Matching it by eye rather than by shared code — see tbd-panel.js.
+// ---------------------------------------------------------------------------
+
+.tbd-panel-embed {
+  margin: 1.5rem 0 2rem;
+}
+
+.tbd-panel {
+  display: block;
+  max-width: 26rem;
+  margin: 0 auto;
+}
+
+// A live practice device is a primary lesson workspace, just like the pattern
+// widget above it. Let both occupy the same content-column width. Static panel
+// illustrations remain compact so reference pages do not become dominated by
+// a non-interactive square.
+.tbd-panel[data-runtime-module] {
+  // Calibrated from the 15-inch MacBook measurement: the full content width
+  // presented the 110 mm panel at roughly 140 mm, so 110 / 140 = 78.6%.
+  // The rem cap prevents unusually wide desktop layouts from scaling it back
+  // beyond a plausible physical-device presentation.
+  width: 78.6%;
+  max-width: 44rem;
+}
+
+.tbd-panel__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  container-type: inline-size;
+  border-radius: 1.2%;
+  background:
+    linear-gradient(148deg, #d8dade 0%, #c3c6cb 38%, #cbced3 62%, #b9bcc2 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    inset 0 0 2.5rem rgba(0, 0, 0, 0.09),
+    0 1px 2px rgba(0, 0, 0, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+
+  // The fine bead-blast finish, as a very quiet noise overlay.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: repeating-linear-gradient(
+      117deg,
+      rgba(255, 255, 255, 0.05) 0 1px,
+      rgba(0, 0, 0, 0.03) 1px 2px
+    );
+  }
+
+  > * {
+    position: absolute;
+  }
+}
+
+// ---- mounting screws -------------------------------------------------------
+
+.tbd-panel__screw {
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #e6e8ea, #a8abb1 62%, #8d9096);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 32%;
+    clip-path: polygon(25% 7%, 75% 7%, 100% 50%, 75% 93%, 25% 93%, 0 50%);
+    background: #7e8188;
+  }
+}
+
+// ---- OLED ------------------------------------------------------------------
+
+.tbd-panel__oled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3%;
+  background: #14161a;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.tbd-panel__oled-view {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    // OLED captures are 128 × 64 — never let them get smoothed.
+    image-rendering: pixelated;
+  }
+
+  .tbd-panel__oled-canvas {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  // A single soft reflection across the glass, no animation.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.11) 0%,
+      rgba(255, 255, 255, 0.03) 22%,
+      rgba(255, 255, 255, 0) 46%
+    );
+  }
+}
+
+// ---- encoders --------------------------------------------------------------
+
+.tbd-panel__knob {
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 26%, #4a4a4c, #1c1c1e 58%, #0d0d0f);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.32),
+    inset 0 1px 1px rgba(255, 255, 255, 0.16);
+
+  webaudio-knob {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0;
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:focus-visible {
+      opacity: 0.01;
+      outline: 2px solid #2e6fd9;
+      outline-offset: 2px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.tbd-panel__knob-pointer {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  width: 6%;
+  height: 34%;
+  transform: translateX(-50%) rotate(var(--tbd-panel-knob-angle, 0deg));
+  transform-origin: 50% 106%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+// ---- buttons ---------------------------------------------------------------
+
+.tbd-panel__btn {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 28%, #34343a, #1b1b1e 62%, #101013);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+
+  &.is-rec {
+    background: radial-gradient(circle at 40% 28%, #ff6a5c, #d92c1c 62%, #a81d10);
+  }
+
+  &.is-play {
+    background: radial-gradient(circle at 40% 28%, #4a4a52, #232329 62%, #141418);
+  }
+
+  &.is-shift {
+    background: radial-gradient(circle at 40% 28%, #fff, #e8e8e4 62%, #bebeba);
+
+    .tbd-panel__cap { color: #202020; }
+  }
+
+  &.is-hyper {
+    background: radial-gradient(circle at 40% 28%, #51b5ff, #208ee6 62%, #0869b5);
+  }
+
+  // Lit by a running sequencer.
+  &.is-active {
+    background: radial-gradient(circle at 40% 28%, #6fe3a8, #22a35f 62%, #157a44);
+  }
+}
+
+.tbd-panel__frame.is-interactive button.tbd-panel__btn {
+  cursor: pointer;
+  touch-action: manipulation;
+
+  &:hover {
+    filter: brightness(1.12);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2e6fd9;
+    outline-offset: 2px;
+    z-index: 2;
+  }
+}
+
+.tbd-panel__cap {
+  color: #f4f4f0;
+  font-size: 2.4cqw;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.tbd-panel__btn.is-small .tbd-panel__cap {
+  font-size: 1.7cqw;
+}
+
+// ---- step buttons and their LEDs -------------------------------------------
+
+.tbd-panel__btn--step {
+  .tbd-panel__cap {
+    font-size: 2.2cqw;
+    color: #d6d6d2;
+  }
+
+  // A step with something programmed on it.
+  &.is-lit {
+    background: radial-gradient(circle at 40% 28%, #ffb08f, #ff5a3c 60%, #d1381e);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.25),
+      0 0 6% 2% rgba(255, 90, 60, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.28);
+
+    .tbd-panel__cap {
+      color: #fff;
+    }
+  }
+
+  &.is-lit-alt {
+    background: radial-gradient(circle at 40% 28%, #8fe6d8, #43c9b0 60%, #2a9384);
+
+    .tbd-panel__cap {
+      color: #05302a;
+    }
+  }
+
+  // The playhead, driven by a followed sequencer.
+  &.is-playhead {
+    box-shadow:
+      0 0 0 2px #ffd23c,
+      0 0 8% 2% rgba(255, 210, 60, 0.45);
+  }
+}
+
+.tbd-panel__led {
+  border-radius: 50%;
+  background: #5c5f66;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+
+  &.is-lit {
+    background: #9cff8c;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 260% 60% rgba(156, 255, 140, 0.35);
+  }
+
+  &.is-lit-alt {
+    background: #6edbff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 260% 60% rgba(110, 219, 255, 0.35);
+  }
+
+  // The hardware playhead is a moving light on the step LED, not merely an
+  // outline around the button below it. Keep it bright over programmed LEDs.
+  &.is-playhead {
+    background: #ffd23c;
+    box-shadow:
+      0 0 0 1px rgba(70, 48, 0, 0.45),
+      0 0 300% 100% rgba(255, 210, 60, 0.75);
+  }
+
+  // A mounted product runtime supplies the physical LED RGB value. Keep the
+  // playhead's stronger halo above it so the moving light remains legible.
+  &.is-runtime-led {
+    background: var(--tbd-panel-runtime-led, #5c5f66);
+  }
+
+  // The firmware palette deliberately uses a low current/value for a steady
+  // programmed-step LED. At documentation scale that raw value reads as
+  // almost black, so preserve the semantic firmware state while presenting it
+  // with the same bright, legible green treatment used before Wasm mounting.
+  &.is-runtime-led.is-lit {
+    // A flat fill loses most of its apparent brightness when the 2 mm LED is
+    // scaled down and antialiased. Give it the white-hot centre of a physical
+    // WS2812, then a saturated green body and halo. `!important` prevents the
+    // inline firmware RGB presentation rule from winning in older builds.
+    background: radial-gradient(
+      circle at 42% 35%,
+      #fff 0 18%,
+      #d8ffd2 19% 38%,
+      #55ff70 55%,
+      #00a62d 100%
+    ) !important;
+    box-shadow:
+      0 0 0 1px rgba(0, 90, 24, 0.5),
+      0 0 150% 55% rgba(170, 255, 174, 0.95),
+      0 0 360% 120% rgba(40, 255, 78, 0.85);
+  }
+
+  &.is-runtime-led.is-playhead {
+    // Firmware flags identify this LED as the active sequence position. Use
+    // the documented amber running-light treatment rather than letting a
+    // dim/off palette entry hide it against the panel.
+    background: radial-gradient(
+      circle at 42% 35%,
+      #fff 0 18%,
+      #fff4bd 19% 38%,
+      #ffd23c 58%,
+      #d68b00 100%
+    ) !important;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 0 360% 115% rgba(255, 210, 60, 0.9);
+  }
+}
+
+.tbd-panel__led--func {
+  background: #777b82;
+}
+
+// ---- "press this" affordance -----------------------------------------------
+
+.tbd-panel__btn.is-highlight,
+.tbd-panel__knob.is-highlight {
+  outline: 2px solid #2e6fd9;
+  outline-offset: 2px;
+  animation: tbd-panel-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes tbd-panel-pulse {
+  0%, 100% { outline-color: rgba(46, 111, 217, 1); }
+  50% { outline-color: rgba(46, 111, 217, 0.25); }
+}
+
+// ---- caption ---------------------------------------------------------------
+
+.tbd-panel__caption {
+  margin: 0.7rem 0 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6a7180;
+}
+
+// ---- motion ----------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .tbd-panel__btn.is-highlight,
+  .tbd-panel__knob.is-highlight {
+    animation: none;
+  }
+}
+
+// ---- phones ----------------------------------------------------------------
+
+@media (max-width: map-get($media-queries, sm) - 0.02rem) {
+  .tbd-panel {
+    max-width: 20rem;
+  }
+
+  .tbd-panel[data-runtime-module] {
+    width: 100%;
+    max-width: none;
+  }
+}

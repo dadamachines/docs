@@ -1,0 +1,41 @@
+{%- comment -%}
+  Loaded by the theme's _includes/head.html on every page (the gem ships this
+  file empty). Everything below is opt-in per page so the manual's reference
+  pages stay byte-for-byte as light as they were.
+
+  A page gets the Learn widget scripts when it either sets `tbd_widgets: true`
+  in its front matter (the documented contract) or simply contains a widget —
+  at layout-render time `page.content` is already-converted HTML, so the
+  fallback catches a page whose author forgot the flag.
+
+  webaudio-controls.js is deliberately NOT deferred: it must define its custom
+  elements before tbd-seq.js instantiates any knob. The device's own WebUI
+  observes the same ordering constraint.
+
+  Every URL goes through `relative_url` so the site keeps working when GitHub
+  Actions builds it with a non-empty --baseurl.
+{%- endcomment -%}
+{%- comment -%}
+  Note on the detection below: at layout-render time `page.content` is still the
+  page's *raw markdown*, so it holds the `{% include tbd-seq.html %}` call
+  rather than the rendered `<tbd-seq>` element. Both spellings are therefore
+  tested — the include name is what actually matches in practice, and the
+  element name covers a page that hand-writes the markup.
+{%- endcomment -%}
+{%- assign tbd_needs_seq = false -%}
+{%- assign tbd_needs_panel = false -%}
+{%- if page.tbd_widgets -%}{%- assign tbd_needs_seq = true -%}{%- endif -%}
+{%- if page.tbd_panel -%}{%- assign tbd_needs_panel = true -%}{%- endif -%}
+{%- if page.content contains "tbd-seq.html" or page.content contains "<tbd-seq" -%}{%- assign tbd_needs_seq = true -%}{%- endif -%}
+{%- if page.content contains "tbd-panel.html" or page.content contains "<tbd-panel" -%}{%- assign tbd_needs_panel = true -%}{%- endif -%}
+{%- if tbd_needs_seq -%}
+<script src="{{ '/assets/js/vendor/webaudio-controls.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/tbd-seq-strings.js?v=r1-edit-reset-8' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/tbd-seq.js?v=r1-practice-3' | relative_url }}" defer id="tbd-seq-js" data-lang="{{ page.lang | default: site.lang | default: 'en' }}"></script>
+<script src="{{ '/assets/js/tbd-learn-practice.js?v=1' | relative_url }}" defer></script>
+{%- endif -%}
+{%- if tbd_needs_panel -%}
+<link rel="stylesheet" href="{{ '/assets/css/tbd-panel-runtime.css?v=led-2' | relative_url }}">
+<script src="{{ '/assets/js/tbd16-panel.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/tbd-panel.js?v=r1-practice-3' | relative_url }}" defer></script>
+{%- endif -%}

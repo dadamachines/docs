@@ -1,0 +1,456 @@
+/*
+ * <tbd-panel> — the TBD-16 front panel, rendered in the docs.
+ *
+ * Purpose: close the gap between "I understand the pattern" and "I know which
+ * button to press". A lesson's browser sequencer teaches the music; this shows
+ * the same thing as lit step buttons on the device, next to the OLED screen you
+ * should be looking at.
+ *
+ * Geometry comes from tbd16-panel.js, which is copied from the hardware
+ * design source. Rendering is deliberately a separate, much smaller
+ * implementation rather than a copy of the existing simulator panel: that
+ * module carries hardcoded singleton element ids (so only one panel could
+ * exist per page) and needs several stubbed globals. Sharing the *data* keeps
+ * the panels honest without coupling a documentation site to an application's
+ * internals.
+ *
+ * Attributes
+ *   data-steps      "1,5,9,13"  — step buttons to show lit
+ *   data-steps-alt  "3,7,11,15" — a second, differently-coloured set
+ *   data-highlight  "func1,play" — controls to ring, for "press this"
+ *   data-oled       "sound_page0" — screenshot basename in images/tbd-16/
+ *   data-caption    short line under the panel
+ *   data-follow     id of a <tbd-seq> whose playhead should drive the LEDs
+ *   data-img-base   filled in by the Liquid include so --baseurl survives
+ *   data-runtime-module optional ES module that exports mount(panel), used by
+ *                       a product Wasm development runtime
+ */
+(function () {
+  'use strict';
+
+  var L = window.TbdPanelLayout;
+  if (!L) return;
+
+  function pct(v, total) { return (v / total * 100) + '%'; }
+
+  function place(node, x, y, w, h) {
+    node.style.left = pct(x - w / 2, L.width);
+    node.style.top = pct(y - h / 2, L.height);
+    node.style.width = pct(w, L.width);
+    node.style.height = pct(h, L.height);
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+
+  function parseList(spec) {
+    if (!spec) return [];
+    return spec.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+
+  class TbdPanel extends HTMLElement {}
+  var proto = TbdPanel.prototype;
+
+  proto.connectedCallback = function () {
+    if (this._built) return;
+    this._built = true;
+
+    this.imgBase = this.dataset.imgBase || '/images/tbd-16/';
+    this.interactive = Boolean(this.dataset.follow || this.dataset.runtimeModule);
+    this.classList.add('tbd-panel');
+
+    var frame = el('div', 'tbd-panel__frame');
+    frame.classList.toggle('is-interactive', this.interactive);
+    frame.setAttribute('role', this.interactive ? 'group' : 'img');
+    frame.setAttribute('aria-label', this.describe());
+    this.frame = frame;
+
+    this.renderScrews(frame);
+    this.renderOled(frame);
+    this.renderFunctionLeds(frame);
+    this.renderEncoders(frame);
+    this.renderButtons(frame);
+    this.renderSteps(frame);
+
+    this.appendChild(frame);
+
+    if (this.dataset.caption) {
+      this.appendChild(el('p', 'tbd-panel__caption', this.dataset.caption));
+    }
+
+    this.applyState();
+    if (this.dataset.runtimeModule) {
+      // Keep a lesson's browser audio player connected. Runtime rendering wins
+      // the visual state, while the followed sequence receives the same button
+      // clicks and remains responsible only for sound.
+      if (this.dataset.follow) this.attachFollow(true);
+      this.attachRuntime();
+    } else this.attachFollow();
+  };
+
+  proto.disconnectedCallback = function () {
+    if (this._runtime && typeof this._runtime.destroy === 'function') this._runtime.destroy();
+    if (this._followEl && this._onStep) {
+      this._followEl.removeEventListener('tbd-seq:step', this._onStep);
+      this._followEl.removeEventListener('tbd-seq:stop', this._onStop);
+      this._followEl.removeEventListener('tbd-seq:pattern', this._onPattern);
+    }
+    if (this._followEl && this._onRuntimeFollowStep) {
+      this._followEl.removeEventListener('tbd-seq:step', this._onRuntimeFollowStep);
+      this._followEl.removeEventListener('tbd-seq:stop', this._onRuntimeFollowStop);
+      this._followEl.removeEventListener('tbd-seq:pattern', this._onRuntimePattern);
+      this._followEl.removeEventListener('tbd-seq:reset-pattern', this._onRuntimeResetPattern);
+    }
+  };
+
+  // A screen reader gets one useful sentence, not 30 button names.
+  proto.describe = function () {
+    var bits = ['tbd 16 front panel'];
+    if (this.interactive) bits.push('interactive');
+    var steps = parseList(this.dataset.steps);
+    if (steps.length) bits.push('step buttons ' + steps.join(', ') + ' lit');
+    var hi = parseList(this.dataset.highlight);
+    if (hi.length) bits.push('highlighting ' + hi.join(', '));
+    return bits.join(', ') + '.';
+  };
+
+  proto.renderScrews = function (frame) {
+    L.screws.forEach(function (s) {
+      var n = el('span', 'tbd-panel__screw');
+      place(n, s.x, s.y, 6.72, 6.72);
+      frame.appendChild(n);
+    });
+  };
+
+  proto.renderOled = function (frame) {
+    var body = el('div', 'tbd-panel__oled');
+    place(body, L.oled.x, L.oled.y, L.oled.bodyW, L.oled.bodyH);
+
+    var view = el('div', 'tbd-panel__oled-view');
+    view.style.width = (L.oled.viewW / L.oled.bodyW * 100) + '%';
+    view.style.height = (L.oled.viewH / L.oled.bodyH * 100) + '%';
+
+    if (this.dataset.oled) {
+      var img = document.createElement('img');
+      img.src = this.imgBase + this.dataset.oled + '.png';
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      view.appendChild(img);
+    }
+    body.appendChild(view);
+    frame.appendChild(body);
+    this.oledView = view;
+  };
+
+  proto.renderEncoders = function (frame) {
+    var self = this;
+    this.knobs = [];
+    L.encoders.forEach(function (k, index) {
+      var n = el('span', 'tbd-panel__knob');
+      n.dataset.control = k.id;
+      n.title = k.label;
+      place(n, k.x, k.y, k.d, k.d);
+      n.appendChild(el('span', 'tbd-panel__knob-pointer'));
+      if (self.interactive) {
+        var knob = document.createElement('webaudio-knob');
+        knob.setAttribute('diameter', '64');
+        knob.setAttribute('min', '0');
+        knob.setAttribute('max', '100');
+        knob.setAttribute('step', '1');
+        knob.setAttribute('value', '50');
+        knob.setAttribute('sensitivity', '0.5');
+        knob.setAttribute('valuetip', '0');
+        knob.setAttribute('tooltip', '');
+        knob.setAttribute('role', 'slider');
+        knob.setAttribute('tabindex', '0');
+        knob.setAttribute('aria-label', k.label);
+        knob.setAttribute('aria-valuemin', '0');
+        knob.setAttribute('aria-valuemax', '100');
+        knob.dataset.slot = index;
+        n.appendChild(knob);
+        self.knobs[index] = knob;
+        self.setKnobVisual(n, 50);
+      }
+      frame.appendChild(n);
+    });
+  };
+
+  proto.setKnobVisual = function (wrap, value) {
+    var angle = -135 + (Math.max(0, Math.min(100, value)) / 100 * 270);
+    wrap.style.setProperty('--tbd-panel-knob-angle', angle + 'deg');
+  };
+
+  proto.renderFunctionLeds = function (frame) {
+    (L.functionLeds || []).forEach(function (led) {
+      var n = el('span', 'tbd-panel__led tbd-panel__led--func');
+      n.dataset.control = led.id;
+      place(n, led.x, led.y, L.ledDiameter, L.ledDiameter);
+      frame.appendChild(n);
+    });
+  };
+
+  proto.renderButtons = function (frame) {
+    var self = this;
+    this.controls = {};
+    L.buttons.forEach(function (b) {
+      var runtimeControl = self.dataset.runtimeModule && ['play', 'func2', 'left', 'right'].indexOf(b.id) !== -1;
+      var canControl = self.interactive && (b.id === 'play' || runtimeControl);
+      var n = el(canControl ? 'button' : 'span', 'tbd-panel__btn');
+      if (canControl) {
+        n.type = 'button';
+        n.setAttribute('aria-label', b.name + (b.id === 'play' ? ' linked sequencer' : ' device control'));
+        n.setAttribute('aria-pressed', 'false');
+      }
+      n.dataset.control = b.id;
+      if (b.tint) n.classList.add('is-' + b.tint);
+      if (b.small) n.classList.add('is-small');
+      n.title = b.name;
+      place(n, b.x, b.y, 8, 8);
+      n.appendChild(el('span', 'tbd-panel__cap', b.cap));
+      frame.appendChild(n);
+      self.controls[b.id] = n;
+    });
+  };
+
+  proto.renderSteps = function (frame) {
+    var self = this;
+    this.stepBtns = [];
+    this.stepLeds = [];
+    L.stepRows.forEach(function (row) {
+      L.stepColumns.forEach(function (x, i) {
+        var index = row.from + i;
+
+        var led = el('span', 'tbd-panel__led');
+        place(led, x, row.ledY, L.ledDiameter, L.ledDiameter);
+        frame.appendChild(led);
+        self.stepLeds[index - 1] = led;
+
+        var b = el(self.interactive ? 'button' : 'span', 'tbd-panel__btn tbd-panel__btn--step');
+        if (self.interactive) {
+          b.type = 'button';
+          b.setAttribute('aria-label', 'Step ' + index);
+          b.setAttribute('aria-pressed', 'false');
+        }
+        b.dataset.step = index;
+        b.title = 'Step ' + index;
+        place(b, x, row.buttonY, 8, 8);
+        b.appendChild(el('span', 'tbd-panel__cap', String(index)));
+        frame.appendChild(b);
+        self.stepBtns[index - 1] = b;
+      });
+    });
+  };
+
+  proto.applyState = function () {
+    var self = this;
+    parseList(this.dataset.steps).forEach(function (n) {
+      var i = parseInt(n, 10) - 1;
+      if (self.stepBtns[i]) {
+        self.stepBtns[i].classList.add('is-lit');
+        if (self.interactive) self.stepBtns[i].setAttribute('aria-pressed', 'true');
+      }
+      if (self.stepLeds[i]) self.stepLeds[i].classList.add('is-lit');
+    });
+    parseList(this.dataset.stepsAlt).forEach(function (n) {
+      var i = parseInt(n, 10) - 1;
+      if (self.stepBtns[i]) self.stepBtns[i].classList.add('is-lit-alt');
+      if (self.stepLeds[i]) self.stepLeds[i].classList.add('is-lit-alt');
+    });
+    parseList(this.dataset.highlight).forEach(function (id) {
+      var n = self.controls[id];
+      if (n) n.classList.add('is-highlight');
+    });
+  };
+
+  // Follow a sequencer on the same page: its playhead becomes the step LEDs,
+  // so the pattern you are hearing is the pattern you would see on the device.
+  proto.attachFollow = function (runtimeLinked) {
+    var id = this.dataset.follow;
+    if (!id) return;
+    var seq = document.getElementById(id);
+    if (!seq) {
+      // The panel can upgrade before the sequencer exists in the DOM if a
+      // lesson ever puts the panel first. Try once more when parsing is done.
+      if (document.readyState === 'loading') {
+        var self0 = this;
+        document.addEventListener('DOMContentLoaded', function () {
+          self0.attachFollow(runtimeLinked);
+        }, { once: true });
+      }
+      return;
+    }
+    var self = this;
+
+    this._followEl = seq;
+    this._setPattern = function (active) {
+      if (!active) return;
+      self.stepBtns.forEach(function (b, i) {
+        var on = active.indexOf(i) !== -1;
+        b.classList.toggle('is-lit', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (self.stepLeds[i]) self.stepLeds[i].classList.toggle('is-lit', on);
+      });
+    };
+    this._setPlaying = function (playing) {
+      var playBtn = self.controls.play;
+      if (!playBtn) return;
+      playBtn.classList.toggle('is-active', playing);
+      playBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    };
+    this._onStep = function (e) {
+      var d = e.detail || {};
+      self.stepBtns.forEach(function (b, i) {
+        var isPlayhead = i === d.column;
+        b.classList.toggle('is-playhead', isPlayhead);
+        if (self.stepLeds[i]) self.stepLeds[i].classList.toggle('is-playhead', isPlayhead);
+      });
+      self._setPattern(d.active);
+      self._setPlaying(true);
+    };
+    this._onPattern = function (e) { self._setPattern((e.detail || {}).active); };
+    this._onStop = function () {
+      self.stepBtns.forEach(function (b) { b.classList.remove('is-playhead'); });
+      self.stepLeds.forEach(function (led) { led.classList.remove('is-playhead'); });
+      self._setPlaying(false);
+    };
+    // With the product runtime mounted, its LED state is authoritative. The
+    // lesson sequencer still supplies browser audio, and its transport must
+    // start/stop the runtime too; it must not paint the LEDs itself.
+    if (!runtimeLinked) {
+      seq.addEventListener('tbd-seq:step', this._onStep);
+      seq.addEventListener('tbd-seq:stop', this._onStop);
+      seq.addEventListener('tbd-seq:pattern', this._onPattern);
+    } else {
+      this._onRuntimePattern = function (e) {
+        var detail = e.detail || {};
+        if (detail.page !== undefined && detail.page !== 0) return;
+        var active = detail.active || [];
+        var productTrack = Number(detail.productTrack);
+        if (!Number.isInteger(productTrack)) return;
+        self._runtimeWantedPattern = active.slice();
+        if (self._runtime && typeof self._runtime.setTrackPattern === 'function') {
+          self._runtime.setTrackPattern(productTrack, active);
+        }
+      };
+      this._onRuntimeResetPattern = function (e) {
+        var detail = e.detail || {};
+        if (detail.page !== undefined && detail.page !== 0) return;
+        if (self._runtime && typeof self._runtime.setTrackPatterns === 'function') {
+          self._runtime.setTrackPatterns(detail.patterns || []);
+        }
+      };
+      this._onRuntimeFollowStep = function () {
+        if (self._runtimePanelInput) return;
+        self._runtimeWantedPlaying = true;
+        if (self._runtime && typeof self._runtime.setTransport === 'function') self._runtime.setTransport(true);
+      };
+      this._onRuntimeFollowStop = function () {
+        if (self._runtimePanelInput) return;
+        self._runtimeWantedPlaying = false;
+        if (self._runtime && typeof self._runtime.setTransport === 'function') self._runtime.setTransport(false);
+      };
+      seq.addEventListener('tbd-seq:step', this._onRuntimeFollowStep);
+      seq.addEventListener('tbd-seq:stop', this._onRuntimeFollowStop);
+      seq.addEventListener('tbd-seq:pattern', this._onRuntimePattern);
+      seq.addEventListener('tbd-seq:reset-pattern', this._onRuntimeResetPattern);
+    }
+
+    this.stepBtns.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        // With Wasm mounted, the physical input adapter sends the command to
+        // the product runtime. Its next snapshot updates browser audio.
+        if (runtimeLinked) return;
+        var page = typeof seq.viewPage === 'number' ? seq.viewPage : 0;
+        if (typeof seq.toggleStepEnabled === 'function') seq.toggleStepEnabled(page * 16 + i + 1);
+      });
+    });
+    if (this.controls.play) {
+      this.controls.play.addEventListener('click', function () {
+        // The panel's own runtime listener performs the corresponding device
+        // press. Unlock audio synchronously in the user gesture, then let the
+        // canonical runtime snapshot decide whether playback actually starts.
+        if (runtimeLinked) {
+          if (typeof seq.unlockPanelAudio === 'function') seq.unlockPanelAudio();
+          return;
+        }
+        if (typeof seq.toggle === 'function') seq.toggle();
+        self._setPlaying(Boolean(seq.playing));
+      });
+    }
+    if (!runtimeLinked && typeof seq.activeColumns === 'function') {
+      this._setPattern(seq.activeColumns(seq.viewPage || 0));
+    }
+    if (typeof seq.getPanelKnobs === 'function') {
+      seq.getPanelKnobs().forEach(function (config, i) {
+        var knob = self.knobs[i];
+        if (!knob) return;
+        // The product runtime owns the visible pointer/value when mounted.
+        // The same input must still reach the lesson sequencer, otherwise a
+        // live panel turns knobs without changing the browser audio.
+        if (!runtimeLinked) {
+          if (typeof knob.setValue === 'function') knob.setValue(config.value, false);
+          else knob.value = config.value;
+        }
+        knob.setAttribute('aria-label', 'Knob ' + (i + 1) + ', ' + config.label);
+        if (!runtimeLinked) {
+          knob.setAttribute('aria-valuenow', String(config.value));
+          knob.setAttribute('aria-valuetext', config.display);
+          self.setKnobVisual(knob.parentNode, config.value);
+        }
+        knob.addEventListener('input', function () {
+          // With Wasm mounted, the semantic input adapter owns this gesture.
+          // panel-runtime projects the resulting production snapshot into the
+          // audio voice, so this DOM event must never become a second source
+          // of parameter truth.
+          if (runtimeLinked) return;
+          var next = seq.setPanelKnob(i, knob.value, self.dataset.runtimeTrack);
+          if (!next) return;
+          if (!runtimeLinked) {
+            knob.setAttribute('aria-valuenow', String(next.value));
+            knob.setAttribute('aria-valuetext', next.display);
+            self.setKnobVisual(knob.parentNode, next.value);
+          }
+        });
+      });
+    }
+    if (!runtimeLinked) this._setPlaying(Boolean(seq.playing));
+    else this._runtimeWantedPlaying = Boolean(seq.playing);
+  };
+
+  // A Wasm product runtime can animate this exact physical panel. The runtime
+  // module supplies only semantic state and pixels; panel geometry remains the
+  // one shared with TBD Studio above.
+  proto.attachRuntime = function () {
+    var self = this;
+    import(this.dataset.runtimeModule).then(function (module) {
+      if (!module || typeof module.mount !== 'function') throw new Error('runtime module has no mount(panel) export');
+      return module.mount(self);
+    }).then(function (runtime) {
+      self._runtime = runtime;
+      var initialPatterns = self._followEl && typeof self._followEl.getPanelPatterns === 'function'
+        ? self._followEl.getPanelPatterns(0) : [];
+      var initialized = initialPatterns.length && typeof runtime.setTrackPatterns === 'function'
+        ? Promise.resolve(runtime.setTrackPatterns(initialPatterns)) : Promise.resolve();
+      return initialized.then(function () {
+        if (typeof self._runtimeWantedPlaying === 'boolean' && typeof runtime.setTransport === 'function') {
+          runtime.setTransport(self._runtimeWantedPlaying);
+        }
+        return runtime;
+      });
+    }).catch(function (error) {
+      self.frame.classList.add('has-runtime-error');
+      self.frame.setAttribute('aria-label', 'tbd 16 front panel; GrooveBox runtime could not load.');
+      // Keep the useful static panel and screenshot as a graceful fallback.
+      if (window.console && console.error) console.error('TBD panel runtime:', error);
+    });
+  };
+
+  if (!window.customElements.get('tbd-panel')) {
+    window.customElements.define('tbd-panel', TbdPanel);
+  }
+}());

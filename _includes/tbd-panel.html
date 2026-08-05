@@ -1,0 +1,28 @@
+{%- comment -%}
+  TBD-16 front panel. Use it in a lesson's "Now do it on your tbd 16" section,
+  so the pattern the reader just heard is shown as lit buttons on the device.
+
+      {% include tbd-panel.html
+         steps="1,5,9,13"
+         oled="sound_page0"
+         highlight="play"
+         caption="Track 1 — Kick. Steps 1, 5, 9 and 13." %}
+
+  Parameters
+    steps       comma list of step buttons to show lit, 1–16
+    steps_alt   a second, differently-coloured set (e.g. a second track)
+    highlight   control ids to ring — the "press this" affordance. Valid ids:
+                up down left right, rec play, shift hyper, func1…func6,
+                knob1…knob4
+    oled        screenshot basename from images/tbd-16/, without .png
+    caption     one short line under the panel
+    follow      id of a <tbd-seq> on the same page. Its pattern/playhead drives
+                the panel, while the panel's step and PLAY buttons control it
+                (give the sequencer include an `id=`)
+    runtime     `groovebox-dev` replaces the screenshot with a real product
+                Wasm framebuffer and routes panel input to the runtime
+
+  Geometry is copied from the hardware design source; the control legends are
+  the firmware's. See assets/js/tbd16-panel.js for why.
+{%- endcomment -%}
+<div class="tbd-panel-embed"><tbd-panel data-img-base="{{ '/images/tbd-16/' | relative_url }}"{% if include.steps %} data-steps="{{ include.steps }}"{% endif %}{% if include.steps_alt %} data-steps-alt="{{ include.steps_alt }}"{% endif %}{% if include.highlight %} data-highlight="{{ include.highlight }}"{% endif %}{% if include.oled %} data-oled="{{ include.oled }}"{% endif %}{% if include.caption %} data-caption="{{ include.caption | escape }}"{% endif %}{% if include.follow %} data-follow="{{ include.follow }}"{% endif %}{% if include.runtime == 'groovebox-dev' %} data-runtime-module="{{ '/assets/runtime/groovebox-dev/panel-runtime.mjs?v=r4-master-1' | relative_url }}"{% endif %}></tbd-panel></div>
