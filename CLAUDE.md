@@ -63,6 +63,23 @@ something you are content to see on the public internet.
   deliberately **not** deferred — it must define its custom elements before
   `tbd-seq.js` instantiates any knob.
 - Every asset URL goes through `relative_url`; CI builds with a `--baseurl`.
-- `assets/runtime/` holds a generated Wasm artifact and a mirrored browser
-  SDK. Both are copied in from elsewhere — do not hand-edit them here. The
+- `assets/runtime/` holds a generated Wasm artifact and a vendored browser
+  SDK. Both are produced elsewhere — do not hand-edit them here. The artifact
   guard is `node assets/runtime/groovebox-dev/smoke-test.mjs`.
+- **`assets/runtime/tbd-wasm-sdk/` is vendored code owned by another
+  repository.** Every file must stay byte-identical to its source, and the
+  directory moves as one unit. `MANIFEST.json` pins a SHA-256 per file and CI
+  fails the build on any mismatch:
+
+  ```sh
+  node tools/sync-tbd-wasm-sdk.mjs                      # verify (what CI runs)
+  node tools/sync-tbd-wasm-sdk.mjs --sync --from <dir>  # re-vendor from source
+  ```
+
+  Never patch a vendored file in place. A `?v=` cache-buster was once edited
+  into one of them; because ES module identity is keyed by the full URL, that
+  silently loaded `runtime-controller.js` twice as two independent module
+  instances — two copies of every class, `instanceof` failing between them.
+  GitHub Pages already serves these with `max-age=600`, so it bought nothing.
+  If a hard cache break is ever genuinely needed, version the directory path
+  so relative imports stay intact; do not edit the files.

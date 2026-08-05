@@ -18,5 +18,10 @@ jobs:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
+      # assets/runtime/tbd-wasm-sdk/ is vendored from another repository and
+      # must stay byte-identical to it. Needs no access to that repository —
+      # it only re-hashes what is committed here.
+      - name: Check vendored tbd-wasm SDK integrity
+        run: node tools/sync-tbd-wasm-sdk.mjs
       - name: Build with Jekyll
         run: bundle exec jekyll build
