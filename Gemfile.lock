@@ -43,16 +43,16 @@ GEM
       safe_yaml (~> 1.0)
       terminal-table (>= 1.8, < 4.0)
       webrick (~> 1.7)
-    jekyll-include-cache (0.2.1)
+    jekyll-include-cache (0.2.2)
       jekyll (>= 3.7, < 5.0)
     jekyll-sass-converter (3.1.0)
       sass-embedded (~> 1.75)
-    jekyll-seo-tag (2.8.0)
+    jekyll-seo-tag (2.9.0)
       jekyll (>= 3.8, < 5.0)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     json (2.16.0)
-    just-the-docs (0.10.1)
+    just-the-docs (0.12.0)
       jekyll (>= 3.8.5)
       jekyll-include-cache
       jekyll-seo-tag (>= 2.0)
@@ -76,9 +76,6 @@ GEM
     rexml (3.4.4)
     rouge (4.6.1)
     safe_yaml (1.0.5)
-    sass-embedded (1.94.2)
-      google-protobuf (~> 4.31)
-      rake (>= 13)
     sass-embedded (1.94.2-arm64-darwin)
       google-protobuf (~> 4.31)
     sass-embedded (1.94.2-x86_64-linux-gnu)
@@ -94,7 +91,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 4.4.1)
-  just-the-docs (= 0.10.1)
+  just-the-docs (= 0.12.0)
   webrick (~> 1.9)
 
 BUNDLED WITH
