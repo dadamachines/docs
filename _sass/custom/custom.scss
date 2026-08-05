@@ -1,3 +1,139 @@
+// Learn-lesson widgets: the step sequencer and the device panel
+@import "./tbd-seq";
+@import "./tbd-panel";
+
+// Learn journey orientation. The bar is deliberately presentational; the
+// adjacent text carries the useful stage, lesson, and readiness information.
+.tbd-learn-progress {
+  margin: 1rem 0 1.75rem;
+  max-width: 42rem;
+}
+
+.tbd-learn-progress__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #5c6370;
+  font-size: 0.88rem;
+}
+
+.tbd-learn-progress__status,
+.tbd-learn-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.16rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tbd-learn-progress__status--live,
+.tbd-learn-status--live {
+  color: #126b3a;
+  background: #d9f3e4;
+}
+
+.tbd-learn-progress__status--partial,
+.tbd-learn-status--partial {
+  color: #7a5200;
+  background: #fff0bf;
+}
+
+.tbd-learn-progress__status--planned,
+.tbd-learn-status--planned {
+  color: #59606b;
+  background: #eceef2;
+}
+
+.tbd-learn-progress__bar {
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  gap: 0.22rem;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    height: 0.32rem;
+    border-radius: 999px;
+    background: #dfe2e8;
+  }
+
+  li.is-past {
+    background: #8d7cf6;
+  }
+
+  li.is-current {
+    background: #5f46dc;
+  }
+
+  li.is-planned {
+    background: #eceef2;
+  }
+}
+
+.tbd-learn-start {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid #d9d2ff;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #f8f6ff, #fff);
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+  }
+
+  p {
+    max-width: 44rem;
+  }
+}
+
+.tbd-practice-goal {
+  margin: 1rem 0 1.25rem;
+  padding: 1rem 1.15rem;
+  border-left: 0.25rem solid #5f46dc;
+  border-radius: 0.35rem;
+  background: #f7f5ff;
+
+  h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.25rem 0;
+  }
+}
+
+.tbd-practice-goal__hint,
+.tbd-practice-status {
+  display: block;
+  color: #5c6370;
+  font-size: 0.9rem;
+}
+
+.tbd-practice-status.is-complete {
+  color: #126b3a;
+  font-weight: 700;
+}
+
+@media (max-width: 31rem) {
+  .tbd-learn-progress__summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .tbd-learn-progress__bar {
+    gap: 0.12rem;
+  }
+}
+
 // TBD-16 manual - OLED screenshot styling
 .screenshot {
   background-color: #000;

@@ -1,0 +1,5 @@
+<aside class="tbd-practice-goal" aria-labelledby="{{ include.id }}-title">
+  <h3 id="{{ include.id }}-title">Practice goal</h3>
+  <p>{{ include.goal }}</p>
+  {% if include.target %}<tbd-practice-status data-follow="{{ include.follow }}" data-target="{{ include.target }}"{% if include.labels %} data-labels="{{ include.labels | escape }}"{% endif %} data-success="{{ include.success | default: 'Pattern complete — press PLAY and listen.' | escape }}"></tbd-practice-status>{% else %}<p class="tbd-practice-goal__hint">Use either the grid or the physical controls below. Both edit the same virtual device.</p>{% endif %}
+</aside>

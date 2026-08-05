@@ -1,0 +1,527 @@
+// ---------------------------------------------------------------------------
+// <tbd-seq> — the step sequencer used by the Learn lessons.
+//
+// Light chrome, dark grid. The page is light, so a fully dark card would read
+// as an advert dropped into the manual; but the grid itself has to be dark,
+// because "lit step = colour" is the whole metaphor the device runs on. The
+// panel uses #1c1f26 — the same dark tone as .origin-card — so the site keeps
+// one dark colour rather than two.
+//
+// Everything is scoped under .tbd-seq. There is no Shadow DOM: the widget
+// deliberately inherits the theme's font stack, focus conventions and
+// reduced-motion handling.
+// ---------------------------------------------------------------------------
+
+$tbd-seq-panel: #1c1f26;
+$tbd-seq-step: #2a3040;
+$tbd-seq-step-beat: #343c50;
+$tbd-seq-playhead: #ffd23c;
+$tbd-seq-line: #d9dce3;
+
+// Before the custom element upgrades there is nothing to show — reserve the
+// space so the page does not jump when the script lands.
+tbd-seq:not(:defined) {
+  display: block;
+  min-height: 8rem;
+  border: 1px solid $tbd-seq-line;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.tbd-seq-embed {
+  margin: 1.5rem 0 2rem;
+}
+
+.tbd-seq {
+  display: block;
+  border: 1px solid $tbd-seq-line;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.9rem 1rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  button {
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+.tbd-seq--panel-monitor {
+  border-color: #9bbcf0;
+  background: #f7faff;
+
+  .tbd-seq__head {
+    margin-bottom: 0.55rem;
+  }
+}
+
+// ---- head: label + A/B variants -------------------------------------------
+
+.tbd-seq__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.tbd-seq__label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #27282d;
+}
+
+.tbd-seq__variants {
+  display: inline-flex;
+  border: 1px solid $tbd-seq-line;
+  border-radius: 7px;
+  overflow: hidden;
+  margin-left: auto;
+}
+
+.tbd-seq__variant {
+  border: 0;
+  background: #f5f6f8;
+  color: #5c6270;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  + .tbd-seq__variant {
+    border-left: 1px solid $tbd-seq-line;
+  }
+
+  &[aria-pressed='true'] {
+    background: #2e6fd9;
+    color: #fff;
+  }
+}
+
+// ---- controls --------------------------------------------------------------
+
+.tbd-seq__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: flex-end;
+  margin-bottom: 0.85rem;
+}
+
+.tbd-seq__play {
+  border: 1px solid #2e6fd9;
+  background: #2e6fd9;
+  color: #fff;
+  border-radius: 7px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 5.5rem;
+
+  &.is-playing {
+    background: #1f8a70;
+    border-color: #1f8a70;
+  }
+}
+
+.tbd-seq__btn {
+  border: 1px solid $tbd-seq-line;
+  background: #f5f6f8;
+  color: #3c4149;
+  border-radius: 7px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #9aa2b1;
+  }
+}
+
+.tbd-seq__ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tbd-seq__ctrl-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: #6a7180;
+}
+
+.tbd-seq__ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  input[type='range'] {
+    width: 8.5rem;
+    max-width: 40vw;
+    accent-color: #2e6fd9;
+    height: 1.6rem;
+  }
+}
+
+.tbd-seq__ctrl-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #27282d;
+  min-width: 4.2rem;
+}
+
+.tbd-seq__seg {
+  display: inline-flex;
+  border: 1px solid $tbd-seq-line;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.tbd-seq__seg-btn {
+  border: 0;
+  background: #f5f6f8;
+  color: #5c6270;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  + .tbd-seq__seg-btn {
+    border-left: 1px solid $tbd-seq-line;
+  }
+
+  &[aria-pressed='true'] {
+    background: #2e6fd9;
+    color: #fff;
+  }
+}
+
+// ---- pages -----------------------------------------------------------------
+
+.tbd-seq__pages {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+
+  .tbd-seq__ctrl-label {
+    margin-right: 0.2rem;
+  }
+}
+
+.tbd-seq__page {
+  width: 2.1rem;
+  height: 1.9rem;
+  border: 1px solid $tbd-seq-line;
+  border-radius: 6px;
+  background: #f5f6f8;
+  color: #5c6270;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    background: #2e6fd9;
+    border-color: #2e6fd9;
+    color: #fff;
+  }
+}
+
+// ---- the grid --------------------------------------------------------------
+
+.tbd-seq__panel {
+  background: $tbd-seq-panel;
+  border-radius: 8px;
+  padding: 0.75rem 0.8rem;
+}
+
+.tbd-seq__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tbd-seq__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tbd-seq__rowlab {
+  flex: 0 0 6rem;
+  width: 6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  background: none;
+  padding: 0.15rem 0;
+  color: #c8ccd4;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+
+  &.is-muted {
+    opacity: 0.38;
+    text-decoration: line-through;
+  }
+}
+
+.tbd-seq__dot {
+  flex: 0 0 auto;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--tbd-seq-color, #888);
+}
+
+.tbd-seq__rowlab-short {
+  display: none;
+}
+
+.tbd-seq__steps {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.tbd-seq__half {
+  flex: 1 1 0;
+  display: flex;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tbd-seq__step {
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1;
+  max-width: 2.6rem;
+  padding: 0;
+  border: 1px solid #363d4d;
+  border-radius: 5px;
+  background: $tbd-seq-step;
+  cursor: pointer;
+  transition: transform 0.05s ease, background-color 0.08s ease;
+
+  &.is-beat {
+    background: $tbd-seq-step-beat;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.is-on,
+  &.is-accent,
+  &.is-ghost {
+    background: var(--tbd-seq-color, #888);
+    border-color: var(--tbd-seq-color, #888);
+  }
+
+  &.is-on {
+    box-shadow: 0 0 6px -1px var(--tbd-seq-color, #888);
+  }
+
+  // An accent is the loudest step in the row — give it a ring so it reads
+  // as "more", not just "on".
+  &.is-accent {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85) inset, 0 0 9px -1px var(--tbd-seq-color, #888);
+  }
+
+  &.is-ghost {
+    opacity: 0.42;
+    box-shadow: none;
+  }
+
+  &.is-playhead {
+    outline: 2px solid $tbd-seq-playhead;
+    outline-offset: -2px;
+  }
+
+  // Steps past the pattern length on the last page.
+  &.is-outside {
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: default;
+
+    &:active {
+      transform: none;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #8ab4ff;
+    outline-offset: 1px;
+  }
+}
+
+.tbd-seq--readonly .tbd-seq__step {
+  cursor: default;
+}
+
+// ---- knob row --------------------------------------------------------------
+
+.tbd-seq__knobs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #eceef1;
+}
+
+.tbd-seq__knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  min-width: 4rem;
+
+  webaudio-knob {
+    display: block;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid #8ab4ff;
+      outline-offset: 2px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.tbd-seq__knob-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #3c4149;
+}
+
+.tbd-seq__knob-value {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: #6a7180;
+}
+
+// ---- status ----------------------------------------------------------------
+
+// Announced to screen readers on transport and pattern changes; sighted users
+// get the same information from the button and the playhead.
+.tbd-seq__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ---- compact ---------------------------------------------------------------
+
+.tbd-seq--compact {
+  .tbd-seq__step {
+    max-width: 2.1rem;
+  }
+
+  .tbd-seq__controls {
+    margin-bottom: 0.6rem;
+  }
+}
+
+// ---- phones ----------------------------------------------------------------
+//
+// Sixteen steps in one row on a 375px screen gives ~17px targets. Rather than
+// shrink, stack each track as two rows of eight — which is literally how the
+// buttons are arranged on the device, so the layout teaches the layout.
+
+// The theme only ships a min-width `mq()` mixin, so the max-width counterpart
+// is written out here — but derived from the theme's own breakpoint map so it
+// stays in step with the sidebar collapsing.
+@media (max-width: map-get($media-queries, md) - 0.02rem) {
+  .tbd-seq {
+    padding: 0.7rem 0.7rem 0.8rem;
+  }
+
+  .tbd-seq__row {
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .tbd-seq__rowlab {
+    flex-basis: 3.4rem;
+    width: 3.4rem;
+    font-size: 0.7rem;
+    padding-top: 0.5rem;
+  }
+
+  .tbd-seq__rowlab-long {
+    display: none;
+  }
+
+  .tbd-seq__rowlab-short {
+    display: inline;
+  }
+
+  .tbd-seq__steps {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tbd-seq__step {
+    max-width: none;
+  }
+
+  .tbd-seq__ctrl-row input[type='range'] {
+    width: 6.5rem;
+  }
+
+  .tbd-seq__play {
+    flex: 1 1 100%;
+    order: -1;
+  }
+}
+
+// ---- reduced motion --------------------------------------------------------
+//
+// The playhead stays — it is information, not decoration. Only its transitions
+// and the press animation go.
+
+@media (prefers-reduced-motion: reduce) {
+  .tbd-seq__step {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+
+    &.is-on,
+    &.is-accent {
+      box-shadow: none;
+    }
+
+    &.is-playhead {
+      outline-color: $tbd-seq-playhead;
+      background-image: linear-gradient(rgba(255, 210, 60, 0.28), rgba(255, 210, 60, 0.28));
+    }
+  }
+}

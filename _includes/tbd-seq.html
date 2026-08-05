@@ -1,0 +1,43 @@
+{%- comment -%}
+  tbd 16 step-sequencer widget.
+
+  Usage in a lesson (must start at column 0, blank line before and after):
+
+      {% include tbd-seq.html
+         label="Boots 'n' cats"
+         tracks="kick,snare,hhc"
+         pattern="kick:1,9|snare:5,13|hhc:1,3,5,7,9,11,13,15"
+         bpm="118"
+         controls="play,bpm" %}
+
+  Parameters
+    label            short name shown above the grid — a NAME, never prose
+    tracks           comma list of row ids, in order (default: derived from pattern)
+    pattern          "id:steps|id:steps", steps 1-indexed. Suffix a step with
+                     ! for an accent or ~ for a ghost note: "snare:5,8~,13!"
+    variant_b        second pattern in the same syntax; enables A/B compare
+    variant_labels   "A,B" — segmented control labels for compare mode
+    bpm              50-185, default 120
+    swing            0-60 (%), default 0
+    steps            16 / 32 / 64, default 16
+    accent           highlight every Nth column, default 4 (the 1·5·9·13 beats)
+    controls         any of play,bpm,swing,length,pages,clear,random,mute,reset.
+                     Reset is added automatically to every editable widget.
+    knobs            "kick:freq,tone,decay" — renders a device-labelled knob row
+    panel_tracks     product-track-to-audio-voice map for a linked runtime,
+                     e.g. "1:kick,2:kick2,3:snare". Mapped voices remain
+                     independently audible even when omitted from the simple
+                     visible curriculum grid; unmapped tracks are untouched.
+    panel_monitor    "true" for the editable companion immediately paired
+                     with a virtual device; its rows are the device tracks
+    edit             "false" for a read-only demo, default "true"
+    density          "compact" for a one-row inline example, default "normal"
+
+  All teaching text belongs in the markdown around the widget, never in these
+  attributes. That is what keeps a lesson translatable as a single .md file.
+
+  The whole element is emitted on ONE unindented line inside a <div>: <div> is
+  on kramdown's block-element list so the block passes through untouched, and a
+  single line can never be mistaken for an indented code block.
+{%- endcomment -%}
+<div class="tbd-seq-embed"><tbd-seq{% if include.id %} id="{{ include.id }}"{% endif %}{% if include.label %} data-label="{{ include.label | escape }}"{% endif %}{% if include.tracks %} data-tracks="{{ include.tracks }}"{% endif %}{% if include.panel_tracks %} data-panel-tracks="{{ include.panel_tracks }}"{% endif %}{% if include.panel_monitor == 'true' %} data-panel-monitor="true"{% endif %}{% if include.pattern %} data-pattern="{{ include.pattern }}"{% endif %}{% if include.variant_b %} data-variant-b="{{ include.variant_b }}" data-variant-labels="{{ include.variant_labels | default: 'A,B' | escape }}"{% endif %}{% if include.knobs %} data-knobs="{{ include.knobs }}"{% endif %} data-bpm="{{ include.bpm | default: 120 }}" data-swing="{{ include.swing | default: 0 }}" data-steps="{{ include.steps | default: 16 }}" data-accent="{{ include.accent | default: 4 }}" data-controls="{{ include.controls | default: 'play,bpm' }}" data-edit="{{ include.edit | default: 'true' }}" data-density="{{ include.density | default: 'normal' }}"></tbd-seq></div>

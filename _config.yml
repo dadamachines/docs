@@ -4,6 +4,36 @@ theme: just-the-docs
 
 url: https://docs.dadamachines.com/
 
+# Files that live in the repo but must never be served from the docs domain.
+# Setting `exclude` REPLACES Jekyll's built-in list, so the defaults are
+# repeated here first — dropping them would publish the Gemfile.
+exclude:
+  # Jekyll defaults
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  # Internal engineering notes. These now live outside the repo entirely (see
+  # .gitignore) — kept here as a second layer so that re-creating one locally
+  # cannot publish it. `nav_exclude` would NOT be enough for the first one:
+  # that only hides the sidebar link, leaving the page live and searchable.
+  - tbd-16/learn/WASM-PLAYHEAD-HANDOVER.md
+  - assets/runtime/groovebox-dev/README.md
+  - assets/runtime/tbd-wasm-sdk/README.md
+  # Third-party attribution note. Has no front matter, so Jekyll would
+  # otherwise copy it verbatim to a public URL rather than render it.
+  - assets/js/vendor/README.md
+  # Node-only test harnesses; nothing in the browser imports these.
+  - assets/runtime/groovebox-dev/smoke-test.mjs
+  - assets/runtime/tbd-wasm-sdk/trace-runner.js
+  - assets/js/tbd-seq-multitrack-test.mjs
+
 # Aux links for the upper right navigation
 aux_links:
   "Forum":
