@@ -5,8 +5,8 @@ import { CanvasSurfaceAdapter } from '../tbd-wasm-sdk/canvas-adapter.js';
 import { RuntimeLifecycle } from '../tbd-wasm-sdk/runtime-lifecycle.js';
 import { SemanticInputAdapter } from '../tbd-wasm-sdk/semantic-input-adapter.js';
 
-const workerUrl = new URL('./development-runtime-worker.mjs?v=r13-f1-bind-fix-1', import.meta.url);
-const moduleUrl = new URL('./groovebox-runtime.mjs?v=r13-f1-bind-fix-1', import.meta.url);
+const workerUrl = new URL('./development-runtime-worker.mjs?v=r14-port-compat-1', import.meta.url);
+const moduleUrl = new URL('./groovebox-runtime.mjs?v=r14-port-compat-1', import.meta.url);
 
 function rgbCss(rgb) { return `#${(rgb >>> 0).toString(16).padStart(6, '0').slice(-6)}`; }
 
