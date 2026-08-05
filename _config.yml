@@ -35,6 +35,9 @@ exclude:
   - assets/runtime/groovebox-dev/smoke-test.mjs
   - assets/runtime/tbd-wasm-sdk/trace-runner.js
   - assets/js/tbd-seq-multitrack-test.mjs
+  # Maintainer tooling and vendoring metadata — not part of the site.
+  - tools/
+  - assets/runtime/tbd-wasm-sdk/MANIFEST.json
 
 # Aux links for the upper right navigation
 aux_links:

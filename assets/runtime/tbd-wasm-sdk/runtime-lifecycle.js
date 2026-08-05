@@ -1,5 +1,5 @@
 import { MonotonicClock } from './clock-drivers.js';
-import { WorkerRuntimeClient } from './runtime-controller.js?v=r1-worker-frame-1';
+import { WorkerRuntimeClient } from './runtime-controller.js';
 
 /**
  * Lazy, retryable lifecycle for one logical device. Hidden devices release
