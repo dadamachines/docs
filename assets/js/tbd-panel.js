@@ -14,12 +14,26 @@
  * the panels honest without coupling a documentation site to an application's
  * internals.
  *
+ * TWO LAYERS OF MARKING, and only one of them is on the device.
+ *
+ * The PRINT is the panel's own silkscreen — arrows, the record dot and play
+ * triangle, x/y over a/b, and a dash on pads 1, 5, 9 and 13. It comes from the
+ * product artwork through tbd16-panel.js's `print` block and it is always
+ * drawn, because it is part of the hardware.
+ *
+ * The LABELS are ours: F1–F6, SHFT, HYPR and the pad numbers. The device has
+ * none of them. They are how a lesson says "press FUNC2" and how somebody
+ * debugging a binding knows which cap is F5, so they are on by default — but
+ * `data-labels="off"` (or `panel.setLabels(false)`) removes every one of them
+ * and leaves the device's actual surface.
+ *
  * Attributes
  *   data-steps      "1,5,9,13"  — step buttons to show lit
  *   data-steps-alt  "3,7,11,15" — a second, differently-coloured set
  *   data-highlight  "func1,play" — controls to ring, for "press this"
  *   data-oled       "sound_page0" — screenshot basename in images/tbd-16/
  *   data-caption    short line under the panel
+ *   data-labels     "off" — hide the helper labels; the print stays
  *   data-follow     id of a <tbd-seq> whose playhead should drive the LEDs
  *   data-img-base   filled in by the Liquid include so --baseurl survives
  *   data-runtime-module optional ES module that exports mount(panel), used by
@@ -52,7 +66,53 @@
     return spec.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
+  // ---- the printed symbols ---------------------------------------------------
+  //
+  // Placement is the viewBox and nothing else. The path data is in the print
+  // artwork's own coordinates, so giving a control's <svg> the viewBox of that
+  // control's 8 mm cap window — converted to artwork units by the single
+  // registration transform in tbd16-panel.js — shows exactly the piece of the
+  // print that falls on the cap. There is no per-symbol offset to get wrong,
+  // and a symbol whose geometry disagrees with the artwork lands off the cap
+  // rather than quietly re-centring itself.
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var print = L.print || null;
+  var printByControl = {};
+  var printByStep = {};
+  ((print && print.symbols) || []).forEach(function (symbol) {
+    if (symbol.control) printByControl[symbol.control] = symbol;
+    else if (symbol.step) printByStep[symbol.step] = symbol;
+  });
+
+  function addPrint(node, symbol, cx, cy, size) {
+    if (!symbol || !print) return;
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('class', 'tbd-panel__print');
+    svg.setAttribute('viewBox', [
+      print.origin + (cx - size / 2) * print.unitsPerMm,
+      print.origin + (cy - size / 2) * print.unitsPerMm,
+      size * print.unitsPerMm,
+      size * print.unitsPerMm
+    ].join(' '));
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    var path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', symbol.d);
+    path.setAttribute('fill', symbol.fill || 'none');
+    if (symbol.stroke) {
+      path.setAttribute('stroke', symbol.stroke);
+      path.setAttribute('stroke-width', symbol.strokeWidth);
+      // The artwork sets round caps at the document level; the dashes are open
+      // strokes and lose 0.35 mm of their printed length without it.
+      path.setAttribute('stroke-linecap', 'round');
+    }
+    svg.appendChild(path);
+    node.appendChild(svg);
+    node.classList.add('has-print');
+  }
+
   class TbdPanel extends HTMLElement {}
+  TbdPanel.observedAttributes = ['data-labels'];
   var proto = TbdPanel.prototype;
 
   proto.connectedCallback = function () {
@@ -69,6 +129,7 @@
     frame.setAttribute('aria-label', this.describe());
     this.frame = frame;
 
+    this.applyLabels(frame);
     this.renderScrews(frame);
     this.renderOled(frame);
     this.renderFunctionLeds(frame);
@@ -106,6 +167,26 @@
       this._followEl.removeEventListener('tbd-seq:reset-pattern', this._onRuntimeResetPattern);
     }
   };
+
+  // ---- helper labels ---------------------------------------------------------
+  //
+  // A class on the frame rather than a re-render: the labels are still in the
+  // DOM when they are hidden, so a screen reader and `title` keep naming the
+  // controls, and toggling costs nothing. The print is untouched either way.
+  proto.applyLabels = function (frame) {
+    var target = frame || this.frame;
+    if (!target) return;
+    target.classList.toggle('is-labels-off', (this.dataset.labels || '').toLowerCase() === 'off');
+  };
+
+  /** Show or hide the helper labels. Reflected to `data-labels` so the
+   *  attribute stays the single source of truth for the state. */
+  proto.setLabels = function (on) {
+    if (on) delete this.dataset.labels;
+    else this.dataset.labels = 'off';
+  };
+
+  proto.attributeChangedCallback = function () { this.applyLabels(); };
 
   // A screen reader gets one useful sentence, not 30 button names.
   proto.describe = function () {
@@ -218,7 +299,11 @@
       if (b.small) n.classList.add('is-small');
       n.title = b.name;
       place(n, b.x, b.y, 8, 8);
-      n.appendChild(el('span', 'tbd-panel__cap', b.cap));
+      addPrint(n, printByControl[b.id], b.x, b.y, 8);
+      // Only the caps the device leaves unmarked carry one. The print already
+      // names the arrows, REC and PLAY, and a stand-in glyph beside the real
+      // one would be a second answer to the same question.
+      if (b.cap) n.appendChild(el('span', 'tbd-panel__cap', b.cap));
       frame.appendChild(n);
       self.controls[b.id] = n;
     });
@@ -246,6 +331,9 @@
         b.dataset.step = index;
         b.title = 'Step ' + index;
         place(b, x, row.buttonY, 8, 8);
+        // The device numbers no pad; it prints a dash on 1, 5, 9 and 13 to
+        // mark the beats. The number is ours.
+        addPrint(b, printByStep[index], x, row.buttonY, 8);
         b.appendChild(el('span', 'tbd-panel__cap', String(index)));
         frame.appendChild(b);
         self.stepBtns[index - 1] = b;
