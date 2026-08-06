@@ -187,7 +187,9 @@
 
   proto.renderFunctionLeds = function (frame) {
     (L.functionLeds || []).forEach(function (led) {
-      var n = el('span', 'tbd-panel__led tbd-panel__led--func');
+      // `kind` defaults to 'func' so a layout written before the REC LED
+      // existed still renders the two meters exactly as it did.
+      var n = el('span', 'tbd-panel__led tbd-panel__led--' + (led.kind || 'func'));
       n.dataset.control = led.id;
       place(n, led.x, led.y, L.ledDiameter, L.ledDiameter);
       frame.appendChild(n);

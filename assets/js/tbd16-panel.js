@@ -8,8 +8,7 @@
  *
  * CONTROL SURFACE
  *   FUNC1/FUNC2 sit beside the OLED, SHIFT/HYPER occupy the centre pair, and
- *   FUNC3–FUNC6 form the right-hand 2 × 2 block. The two visible FUNC status
- *   LEDs are included along with the 16 step LEDs.
+ *   FUNC3–FUNC6 form the right-hand 2 × 2 block.
  *
  *   That 2 × 2 block reads F3 F4 across the top and F6 F5 across the bottom —
  *   the bottom row is deliberately not in numeric order, which is why it is
@@ -17,6 +16,12 @@
  *   ordering is taken from the physical device; the product drawing legends
  *   these four caps x / y over a / b rather than by FUNC number, so it cannot
  *   settle the question on its own. Check hardware before changing it.
+ *
+ * THE COMPLETE LED SET
+ *   Nineteen: 16 above the step pads, 2 beside the OLED (above FUNC1/FUNC2),
+ *   and 1 above the REC cap. There is no PLAY LED — the PLAY button is an
+ *   unlit cap, and so is every step button; the WS2812 above a control is the
+ *   only light on this panel. Confirmed against hardware 2026-08-06.
  */
 window.TbdPanelLayout = {
   source: 'hardware design source (panel geometry, millimetres)',
@@ -34,9 +39,17 @@ window.TbdPanelLayout = {
     resX: 128, resY: 64
   },
 
+  // Every LED that is not above a step pad. `kind` becomes the element's
+  // modifier class, so a consumer can style the transport indicator apart from
+  // the two meters without hard-coding an id.
+  //
+  // The REC LED sits directly above the REC cap at the same 6.80 mm offset a
+  // step LED has above its pad (stepRows: 84.65 − 77.85), which is how it
+  // reads on the hardware: 58.65 − 6.80 = 51.85.
   functionLeds: [
-    { id: 'func1-led', x: 13.50, y: 31.50 },
-    { id: 'func2-led', x: 96.50, y: 31.50 }
+    { id: 'func1-led', x: 13.50, y: 31.50, kind: 'func' },
+    { id: 'func2-led', x: 96.50, y: 31.50, kind: 'func' },
+    { id: 'rec-led',   x: 49.50, y: 51.85, kind: 'transport' }
   ],
 
   screws: [
