@@ -10,6 +10,13 @@
  *   FUNC1/FUNC2 sit beside the OLED, SHIFT/HYPER occupy the centre pair, and
  *   FUNC3–FUNC6 form the right-hand 2 × 2 block. The two visible FUNC status
  *   LEDs are included along with the 16 step LEDs.
+ *
+ *   That 2 × 2 block reads F3 F4 across the top and F6 F5 across the bottom —
+ *   the bottom row is deliberately not in numeric order, which is why it is
+ *   easy to transcribe wrongly and was wrong here until 2026-08-06. The
+ *   ordering is taken from the physical device; the product drawing legends
+ *   these four caps x / y over a / b rather than by FUNC number, so it cannot
+ *   settle the question on its own. Check hardware before changing it.
  */
 window.TbdPanelLayout = {
   source: 'hardware design source (panel geometry, millimetres)',
@@ -57,8 +64,8 @@ window.TbdPanelLayout = {
     { id: 'up',    x: 27.50, y: 58.65, cap: '⌃',    name: 'Up' },
     { id: 'rec',   x: 49.50, y: 58.65, cap: '●',    name: 'Rec',  tint: 'rec' },
     { id: 'play',  x: 60.50, y: 58.65, cap: '▶',    name: 'Play', tint: 'play' },
-    { id: 'func4', x: 82.50, y: 58.65, cap: 'F4',   name: 'Func 4' },
-    { id: 'func3', x: 93.50, y: 58.65, cap: 'F3',   name: 'Func 3' },
+    { id: 'func3', x: 82.50, y: 58.65, cap: 'F3',   name: 'Func 3' },
+    { id: 'func4', x: 93.50, y: 58.65, cap: 'F4',   name: 'Func 4' },
 
     // lower auxiliary row — y 69.65
     { id: 'left',  x: 16.50, y: 69.65, cap: '‹',    name: 'Left' },
@@ -66,8 +73,8 @@ window.TbdPanelLayout = {
     { id: 'right', x: 38.50, y: 69.65, cap: '›',    name: 'Right' },
     { id: 'shift', x: 49.50, y: 69.65, cap: 'SHFT', name: 'Shift', small: true, tint: 'shift' },
     { id: 'hyper', x: 60.50, y: 69.65, cap: 'HYPR', name: 'Hyper', small: true, tint: 'hyper' },
-    { id: 'func5', x: 82.50, y: 69.65, cap: 'F5',   name: 'Func 5' },
-    { id: 'func6', x: 93.50, y: 69.65, cap: 'F6',   name: 'Func 6' }
+    { id: 'func6', x: 82.50, y: 69.65, cap: 'F6',   name: 'Func 6' },
+    { id: 'func5', x: 93.50, y: 69.65, cap: 'F5',   name: 'Func 5' }
   ],
 
   // Steps 1–8 on y 84.65, steps 9–16 on y 99.65; each with a WS2812 above it.
